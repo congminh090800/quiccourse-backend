@@ -40,11 +40,12 @@ app.use(bodyParser.json());
 
 const healthCheckFn = (req, res) => {
   let result = {
-    message: 'Hello',
     app: config.app.name,
+    description: config.app.description,
     version: config.app.version,
     health: 'OK',
     environment: app.get('env'),
+    documentationLink: req.protocol + "://" + req.get('host') + '/api-docs',
   };
 
   res.json(result);
@@ -52,6 +53,9 @@ const healthCheckFn = (req, res) => {
 //paths
 app.get('/', healthCheckFn);
 app.get('/health', (req, res) => res.send('OK!'));
+
+// documentation
+require('config/swagger')(app);
 
 app.use('/api', require('features'));
 

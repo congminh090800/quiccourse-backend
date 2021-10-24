@@ -5,6 +5,7 @@ const config = {
     app: {
         name: pkg.name,
         version: pkg.version,
+        description: pkg.description,
         port: Number(process.env.PORT) || 3000,
     },
     db: {

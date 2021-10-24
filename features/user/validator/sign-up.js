@@ -14,7 +14,7 @@ const schema = Joi.object().keys({
         .regex(/^[0-9]{10,11}$/)
         .required(),
     name: Joi.string().min(6).max(100).required(),
-    birthDate: Joi.date().allow(null).optional(),
+    birthDate: Joi.date().iso().allow(null).optional(),
     gender: Joi.string().valid('male', 'female').optional(),
 });
 

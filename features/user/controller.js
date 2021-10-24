@@ -57,7 +57,7 @@ module.exports = {
     },
     createAdmin: async (req, res, next) => {
         try { 
-            const userId = req.user.id;
+            const userId = req.body.userId;
             const valid = await User.findOne({ _id: mongoose.Types.ObjectId(userId), deleted_flag: false });
             if (!valid) {
                 return res.notFound("Not Found", "User not found");

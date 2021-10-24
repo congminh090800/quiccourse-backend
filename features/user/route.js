@@ -26,3 +26,96 @@ router.post(
 );
 
 module.exports = router;
+
+/**
+ * @swagger
+ * /api/signup:
+ *  post:
+ *      tags:
+ *          - user
+ *      summary: Create new account
+ *      requestBody:
+ *          description: User information
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      example:
+ *                          {
+ *                               "email": "tester4@gmail.com",
+ *                               "password": "abc123456",
+ *                               "name": "Tester no.4",
+ *                               "phone": "0195698121",
+ *                               "gender": "female",
+ *                               "birthDate": "2018-03-20T09:12:28Z"
+ *                           }
+ *      responses:
+ *          200:
+ *              description: Return access token
+ *              examples:
+ *                  application/json:
+ *                      {
+ *                          "data": "61754d7b81dd1d44c3013172"
+ *                      }
+ *              
+ */
+
+/**
+ * @swagger
+ * /api/signin:
+ *  post:
+ *      tags:
+ *          - user
+ *      summary: Sign in
+ *      requestBody:
+ *          description: Username and password
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      example:
+ *                          {
+ *                               "email": "tester1@gmail.com",
+ *                               "password": "Design023",
+ *                           }
+ *      responses:
+ *          200:
+ *              description: Return access token
+ *              examples:
+ *                  application/json:
+ *                      {
+ *                          "data": "61754d7b81dd1d44c3013172"
+ *                      }
+ *              
+ */
+
+/**
+ * @swagger
+ * /api/createAdmin:
+ *  post:
+ *      tags:
+ *          - user
+ *      summary: Promote a user to become admin
+ *      requestBody:
+ *          description: Enter user id
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      example:
+ *                          {
+ *                               "userId": "61748455a3966446b239dd87"
+ *                           }
+ *      responses:
+ *          200:
+ *              description: Return access token
+ *              examples:
+ *                  application/json:
+ *                      {
+ *                          "data": "61754d7b81dd1d44c3013172"
+ *                      }
+ *              
+ */

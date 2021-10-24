@@ -28,3 +28,116 @@ router.get(
     controller.searchRelevant,
 );
 module.exports = router;
+
+/**
+ * @swagger
+ * /api/courses:
+ *  post:
+ *      tags:
+ *          - course
+ *      summary: Create new course
+ *      requestBody:
+ *          description: Course information
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      example:
+ *                           {
+ *                               "name": "Test name",
+ *                               "section": "Test section",
+ *                               "subject": "Test subject",
+ *                               "room": "Test room",
+ *                               "owner": "61748455a3966446b239dd87",
+ *                               "backgroundImg": "https://gstatic.com/classroom/themes/img_read.jpg",
+ *                               "participants": [
+ *                                   "617540443cd3edf1f42edecf",
+ *                                   "6175407f3cd3edf1f42eded2"
+ *                               ]
+ *                           }
+ *      responses:
+ *          200:
+ *              description: Return course created
+ *              
+ */
+
+/**
+ * @swagger
+ * /api/courses:
+ *  get:
+ *      tags:
+ *          - course
+ *      summary: Query a list of courses as admin
+ *      description: name, section, owner search by regex; code must be exactly matched 
+ *      parameters:
+ *          -   name: name
+ *              in: query
+ *              schema:
+ *                  type: string
+ *          -   name: section
+ *              in: query
+ *              schema:
+ *                  type: string
+ *          -   name: owner
+ *              in: query
+ *              schema:
+ *                  type: string
+ *          -   name: code
+ *              in: query
+ *              schema:
+ *                  type: string
+ *          -   name: offset
+ *              in: query
+ *              required: true
+ *              schema:
+ *                  type: number
+ *          -   name: limit
+ *              in: query
+ *              required: true
+ *              schema:
+ *                  type: number
+ *      responses:
+ *          200:
+ *              description: Return list with pagination
+ */
+
+/**
+ * @swagger
+ * /api/courses/me:
+ *  get:
+ *      tags:
+ *          - course
+ *      summary: Query a list of courses as relevant to your account (you are the owner or a participant)
+ *      description: name, section, owner search by regex; code must be exactly matched 
+ *      parameters:
+ *          -   name: name
+ *              in: query
+ *              schema:
+ *                  type: string
+ *          -   name: section
+ *              in: query
+ *              schema:
+ *                  type: string
+ *          -   name: owner
+ *              in: query
+ *              schema:
+ *                  type: string
+ *          -   name: code
+ *              in: query
+ *              schema:
+ *                  type: string
+ *          -   name: offset
+ *              in: query
+ *              required: true
+ *              schema:
+ *                  type: number
+ *          -   name: limit
+ *              in: query
+ *              required: true
+ *              schema:
+ *                  type: number
+ *      responses:
+ *          200:
+ *              description: Return list with pagination    
+ */
