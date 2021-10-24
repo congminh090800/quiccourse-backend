@@ -25,7 +25,9 @@
     "mongoose": "^6.0.12",
     "mongoose-paginate": "^5.0.3",
     "randexp": "^0.5.3",
-    "rootpath": "^0.1.2"
+    "rootpath": "^0.1.2",
+    "swagger-jsdoc": "^6.1.0",
+    "swagger-ui-express": "^4.1.6"
   },
   "devDependencies": {
     "nodemon": "^2.0.14"

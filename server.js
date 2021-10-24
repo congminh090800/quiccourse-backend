@@ -43,14 +43,14 @@ const healthCheckFn = (req, res) => {
     message: 'Hello',
     app: config.app.name,
     version: config.app.version,
-    health: 'OK'
+    health: 'OK',
+    environment: app.get('env'),
   };
 
   res.json(result);
 };
 //paths
 app.get('/', healthCheckFn);
-app.get('/web/health', healthCheckFn);
 app.get('/health', (req, res) => res.send('OK!'));
 
 app.use('/api', require('features'));
