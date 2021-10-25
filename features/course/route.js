@@ -81,6 +81,7 @@ module.exports = router;
  *                  type: string
  *          -   name: owner
  *              in: query
+ *              description: Name of owner not id
  *              schema:
  *                  type: string
  *          -   name: code
@@ -108,7 +109,7 @@ module.exports = router;
  *  get:
  *      tags:
  *          - course
- *      summary: Query a list of courses as relevant to your account (you are the owner or a participant)
+ *      summary: Query a list of courses that relevant to your account (you are the owner or a participant)
  *      description: name, section, owner search by regex; code must be exactly matched 
  *      parameters:
  *          -   name: name
@@ -121,6 +122,7 @@ module.exports = router;
  *                  type: string
  *          -   name: owner
  *              in: query
+ *              description: Name of owner not id
  *              schema:
  *                  type: string
  *          -   name: code
