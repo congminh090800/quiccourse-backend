@@ -9,6 +9,6 @@ To run in dev:
 To build the project:
 ### npm run build
 
-Github: https://github.com/congminh090800/hcmus-course-backend
-Hosted on: https://hcmus-course-backend.herokuapp.com/
-Documentation: https://hcmus-course-backend.herokuapp.com/api-docs
+Github: https://github.com/congminh090800/hcmus-course-backend<br/>
+Hosted on: https://hcmus-course-backend.herokuapp.com/<br/>
+Documentation: https://hcmus-course-backend.herokuapp.com/api-docs<br/>
