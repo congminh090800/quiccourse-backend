@@ -35,7 +35,8 @@ module.exports = router;
  *                               "name": "Tester no.4",
  *                               "phone": "0195698121",
  *                               "gender": "female",
- *                               "birthDate": "2018-03-20T09:12:28Z"
+ *                               "birthDate": "2018-03-20T09:12:28Z",
+ *                               "avatar": "https://abc.com/some-link",
  *                           }
  *      responses:
  *          200:
