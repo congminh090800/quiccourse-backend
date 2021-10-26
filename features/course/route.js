@@ -1,31 +1,31 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const controller = require('./controller');
-const validator = require('middlewares/validator.middleware');
-const requestSchema = require('./validator');
-const authenticate = require('middlewares/authenticate.middleware');
-const authorize = require('middlewares/authorize.middleware');
+const controller = require("./controller");
+const validator = require("middlewares/validator.middleware");
+const requestSchema = require("./validator");
+const authenticate = require("middlewares/authenticate.middleware");
+const authorize = require("middlewares/authorize.middleware");
 
 router.post(
-    '/courses',
-    authenticate,
-    validator(requestSchema.create),
-    controller.create,
+  "/courses",
+  authenticate,
+  validator(requestSchema.create),
+  controller.create
 );
 
 router.get(
-    '/courses',
-    authenticate,
-    authorize,
-    validator(requestSchema.search, 'query'),
-    controller.search,
+  "/courses",
+  authenticate,
+  authorize,
+  validator(requestSchema.search, "query"),
+  controller.search
 );
 
 router.get(
-    '/courses/me',
-    authenticate,
-    validator(requestSchema.search, 'query'),
-    controller.searchRelevant,
+  "/courses/me",
+  authenticate,
+  validator(requestSchema.search, "query"),
+  controller.searchRelevant
 );
 module.exports = router;
 
@@ -59,7 +59,7 @@ module.exports = router;
  *      responses:
  *          200:
  *              description: Return course created
- *              
+ *
  */
 
 /**
@@ -69,7 +69,7 @@ module.exports = router;
  *      tags:
  *          - course
  *      summary: Query a list of courses as admin
- *      description: name, section, owner search by regex; code must be exactly matched 
+ *      description: name, section, owner search by regex; code must be exactly matched
  *      parameters:
  *          -   name: name
  *              in: query
@@ -110,7 +110,7 @@ module.exports = router;
  *      tags:
  *          - course
  *      summary: Query a list of courses that relevant to your account (you are the owner or a participant)
- *      description: name, section, owner search by regex; code must be exactly matched 
+ *      description: name, section, owner search by regex; code must be exactly matched
  *      parameters:
  *          -   name: name
  *              in: query
@@ -141,5 +141,5 @@ module.exports = router;
  *                  type: number
  *      responses:
  *          200:
- *              description: Return list with pagination    
+ *              description: Return list with pagination
  */

@@ -1,5 +1,5 @@
 module.exports = {
-    Course: require('./course'),
-    User: require('./user'),
-    Admin: require('./admin'),
-}
+  Course: require("./course"),
+  User: require("./user"),
+  Admin: require("./admin"),
+};

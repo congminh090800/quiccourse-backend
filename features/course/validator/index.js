@@ -1,4 +1,4 @@
 module.exports = {
-    create: require('./create'),
-    search: require('./search'),
-}
+  create: require("./create"),
+  search: require("./search"),
+};
