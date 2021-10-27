@@ -56,7 +56,11 @@ module.exports = {
       }
 
       const accessToken = jwt.sign({ id: user._id }, config.secret.accessToken);
-      return res.ok(accessToken);
+      user.password = undefined;
+      return res.ok({
+        accessToken: accessToken,
+        user: user,
+      });
     } catch (err) {
       console.log("sign in failed:", err);
       next(err);
