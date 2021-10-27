@@ -91,4 +91,35 @@ module.exports = {
       next(err);
     }
   },
+  findById: async (req, res, next) => {
+    try {
+      console.log(req.params);
+      const { id } = req.params;
+      const existed = await User.findOne(
+        {
+          _id: mongoose.Types.ObjectId(id),
+          deleted_flag: false,
+        },
+        "-password"
+      );
+      if (!existed) {
+        return res.notFound("Not found", "User does not exist");
+      }
+      console.log(existed);
+      return res.ok(existed);
+    } catch (err) {
+      console.log("find user by id failed", err);
+      next(err);
+    }
+  },
+  findMe: async (req, res, next) => {
+    try {
+      const { id } = req.user;
+      const existed = await User.findById(id, "-password");
+      return res.ok(existed);
+    } catch (err) {
+      console.log("find user by id failed", err);
+      next(err);
+    }
+  },
 };

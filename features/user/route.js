@@ -6,11 +6,15 @@ const requestSchema = require("./validator");
 const authenticate = require("middlewares/authenticate.middleware");
 const authorize = require("middlewares/authorize.middleware");
 
+router.get("/user/me", authenticate, controller.findMe);
+
 router.post("/signup", validator(requestSchema.signUp), controller.signUp);
 
 router.post("/signin", validator(requestSchema.signIn), controller.signIn);
 
 router.post("/createAdmin", authenticate, authorize, controller.createAdmin);
+
+router.get("/user/:id", controller.findById);
 
 module.exports = router;
 
@@ -106,4 +110,34 @@ module.exports = router;
  *                          "data": "61754d7b81dd1d44c3013172"
  *                      }
  *
+ */
+
+/**
+ * @swagger
+ * /api/user/me:
+ *  get:
+ *      tags:
+ *          - user
+ *      summary: Query your information
+ *      responses:
+ *          200:
+ *              description: Return user info
+ */
+
+/**
+ * @swagger
+ * /api/user/{userId}:
+ *  get:
+ *      tags:
+ *          - user
+ *      summary: Query a user information
+ *      parameters:
+ *          -   name: userId
+ *              in: path
+ *              required: true
+ *              schema:
+ *                  type: string
+ *      responses:
+ *          200:
+ *              description: Return user info
  */
