@@ -14,7 +14,7 @@ router.post("/signin", validator(requestSchema.signIn), controller.signIn);
 
 router.post("/createAdmin", authenticate, authorize, controller.createAdmin);
 
-router.get("/user/:id", controller.findById);
+router.get("/user/:id", authenticate, controller.findById);
 
 module.exports = router;
 
