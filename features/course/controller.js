@@ -178,8 +178,7 @@ module.exports = {
           },
         }
       );
-      console.log("updated", updated);
-      res.ok(updated);
+      res.ok(selectedCourse);
     } catch (err) {
       console.log("participate failed", err);
       next(err);
