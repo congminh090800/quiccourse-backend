@@ -81,7 +81,7 @@ module.exports = {
       let options = {
         sort: { createdAt: -1 },
         populate: {
-          path: "owner",
+          path: "owner participants",
           select: "-password",
         },
         lean: true,
@@ -140,7 +140,7 @@ module.exports = {
         sort: { createdAt: -1 },
         populate: {
           path: "owner participants",
-          select: "name email",
+          select: "-password",
         },
         lean: true,
         offset: offset,
@@ -150,6 +150,38 @@ module.exports = {
       res.ok(courses);
     } catch (err) {
       console.log("search courses failed:", err);
+      next(err);
+    }
+  },
+  participate: async (req, res, next) => {
+    try {
+      const { codeRoom } = req.params;
+      const { id } = req.user;
+      console.log("info", codeRoom, id);
+      const selectedCourse = await Course.findOne({
+        code: codeRoom,
+        deleted_flag: false,
+      });
+      if (!selectedCourse) {
+        return res.notFound("Class not exitst", "Class does not exist");
+      }
+
+      if (selectedCourse.participants.includes(id)) {
+        return res.badRequest("Bad Request", "User are already in the class");
+      }
+
+      const updated = await Course.update(
+        { _id: selectedCourse._id, deleted_flag: false },
+        {
+          $push: {
+            participants: id,
+          },
+        }
+      );
+      console.log("updated", updated);
+      res.ok(updated);
+    } catch (err) {
+      console.log("participate failed", err);
       next(err);
     }
   },

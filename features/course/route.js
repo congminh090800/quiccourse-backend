@@ -27,6 +27,12 @@ router.get(
   validator(requestSchema.search, "query"),
   controller.searchRelevant
 );
+
+router.patch(
+  "/courses/participate/:codeRoom",
+  authenticate,
+  controller.participate
+);
 module.exports = router;
 
 /**
@@ -142,4 +148,22 @@ module.exports = router;
  *      responses:
  *          200:
  *              description: Return list with pagination
+ */
+
+/**
+ * @swagger
+ * /api/courses/participate/{codeRoom}:
+ *  patch:
+ *      tags:
+ *          - course
+ *      summary: Participate a course
+ *      parameters:
+ *          -   name: codeRoom
+ *              in: path
+ *              required: true
+ *              schema:
+ *                  type: string
+ *      responses:
+ *          200:
+ *              description: Return update info
  */
