@@ -5,7 +5,7 @@ const schema = Joi.object().keys({
   section: Joi.string().min(3).optional(),
   subject: Joi.string().min(3).optional(),
   room: Joi.string().min(3).optional(),
-  backgroundImg: Joi.string().uri().optional().allow(null).allow(""),
+  backgroundImg: Joi.string().optional().allow(null).allow(""),
   owner: Joi.string().required(),
   participants: Joi.array().items(Joi.string()).allow(null).optional(),
 });

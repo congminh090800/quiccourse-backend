@@ -10,7 +10,6 @@ module.exports = {
       let code;
       do {
         code = generateRoomCode();
-        console.log("code generated", code);
         existed = await Course.findOne({ code: code });
       } while (existed);
       let participants = body.participants;
