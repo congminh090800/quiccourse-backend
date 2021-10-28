@@ -7,7 +7,7 @@ const schema = Joi.object().keys({
   room: Joi.string().min(3).optional(),
   backgroundImg: Joi.string().uri().optional().allow(null).allow(""),
   owner: Joi.string().required(),
-  participants: Joi.array().items(Joi.string()).optional(),
+  participants: Joi.array().items(Joi.string()).allow(null).optional(),
 });
 
 module.exports = schema;

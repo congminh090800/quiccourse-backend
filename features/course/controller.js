@@ -32,10 +32,12 @@ module.exports = {
         room: body.room,
         owner: mongoose.Types.ObjectId(body.owner),
         code: code,
-        backgroundImg: body.backgroundImg,
-        participants: body.participants.map((participant) =>
-          mongoose.Types.ObjectId(participant)
-        ),
+        backgroundImg: body.backgroundImg ? body.backgroundImg : "",
+        participants: body.participants
+          ? body.participants.map((participant) =>
+              mongoose.Types.ObjectId(participant)
+            )
+          : [],
       });
 
       const saved = await newCourse.save();
