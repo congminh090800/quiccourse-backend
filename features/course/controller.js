@@ -21,7 +21,7 @@ module.exports = {
           });
           if (!valid) {
             return res.notFound(
-              "Not Found",
+              `Participan at index ${i} is invalid or deleted!`,
               `Participan at index ${i} is invalid or deleted!`
             );
           }
@@ -167,11 +167,14 @@ module.exports = {
         deleted_flag: false,
       });
       if (!selectedCourse) {
-        return res.notFound("Class not exitst", "Class does not exist");
+        return res.notFound("Class does not exist", "Class does not exist");
       }
 
       if (selectedCourse.participants.includes(id)) {
-        return res.badRequest("Bad Request", "User are already in the class");
+        return res.badRequest(
+          "User are already in the class",
+          "User are already in the class"
+        );
       }
 
       const updated = await Course.update(

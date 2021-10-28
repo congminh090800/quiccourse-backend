@@ -13,9 +13,13 @@ module.exports = {
       const user = await User.findOne({ email: email });
 
       if (user) {
-        return res.badRequest("EMAIL_EXISTS_ALREADY", "EMAIL_EXISTS_ALREADY", {
-          fields: ["email"],
-        });
+        return res.badRequest(
+          "Email is already existed",
+          "EMAIL_EXISTS_ALREADY",
+          {
+            fields: ["email"],
+          }
+        );
       }
 
       const salt = bcrypt.genSaltSync(10);
@@ -45,14 +49,14 @@ module.exports = {
       const user = await User.findOne({ email: email });
 
       if (!user) {
-        return res.badRequest("EMAIL_NOT_EXISTS", "EMAIL_NOT_EXISTS", {
+        return res.badRequest("Email does not exist", "EMAIL_NOT_EXISTS", {
           fields: ["email"],
         });
       }
 
       const matched = bcrypt.compareSync(password, user.password);
       if (!matched) {
-        return res.unauthorized("UNAUTHORIZED", "UNAUTHORIZED");
+        return res.unauthorized("Unauthorized", "UNAUTHORIZED");
       }
 
       const accessToken = jwt.sign({ id: user._id }, config.secret.accessToken);
@@ -74,7 +78,7 @@ module.exports = {
         deleted_flag: false,
       });
       if (!valid) {
-        return res.notFound("Not Found", "User not found");
+        return res.notFound("User not found", "User not found");
       }
 
       const validAdmin = await Admin.findOne({
@@ -82,7 +86,10 @@ module.exports = {
         deleted_flag: false,
       });
       if (validAdmin) {
-        return res.badRequest("Bad Request", "This user is already an admin");
+        return res.badRequest(
+          "This user is already an admin",
+          "This user is already an admin"
+        );
       }
 
       const newAdmin = await Admin({
@@ -107,7 +114,7 @@ module.exports = {
         "-password"
       );
       if (!existed) {
-        return res.notFound("Not found", "User does not exist");
+        return res.notFound("User does not exist", "User does not exist");
       }
       console.log(existed);
       return res.ok(existed);
