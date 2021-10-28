@@ -13,16 +13,19 @@ module.exports = {
         console.log("code generated", code);
         existed = await Course.findOne({ code: code });
       } while (existed);
-      for (let i = 0; i < body.participants.length; i++) {
-        const valid = await User.findOne({
-          deleted_flag: false,
-          _id: mongoose.Types.ObjectId(body.participants[i]),
-        });
-        if (!valid) {
-          return res.notFound(
-            "Not Found",
-            `Participan at index ${i} is invalid or deleted!`
-          );
+      let participants = body.participants;
+      if (participants) {
+        for (let i = 0; i < body.participants.length; i++) {
+          const valid = await User.findOne({
+            deleted_flag: false,
+            _id: mongoose.Types.ObjectId(body.participants[i]),
+          });
+          if (!valid) {
+            return res.notFound(
+              "Not Found",
+              `Participan at index ${i} is invalid or deleted!`
+            );
+          }
         }
       }
       const newCourse = await Course({
@@ -33,8 +36,8 @@ module.exports = {
         owner: mongoose.Types.ObjectId(body.owner),
         code: code,
         backgroundImg: body.backgroundImg ? body.backgroundImg : "",
-        participants: body.participants
-          ? body.participants.map((participant) =>
+        participants: participants
+          ? participants.map((participant) =>
               mongoose.Types.ObjectId(participant)
             )
           : [],
