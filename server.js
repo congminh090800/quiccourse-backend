@@ -9,7 +9,7 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const baseResponse = require("lib/base-response");
-const morgan = require('morgan');
+const morgan = require("morgan");
 
 const app = express();
 const config = require("config");
@@ -22,7 +22,7 @@ database.connect();
 // settings
 app.use(morgan("dev"));
 
-app.use("/static", express.static(path.join(__dirname, "public")));
+app.use("/static", express.static(path.join(__dirname, "/static")));
 
 app.use(baseResponse());
 
@@ -38,7 +38,7 @@ app.use(limiter);
 
 app.use(cors());
 
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 const healthCheckFn = (req, res) => {
