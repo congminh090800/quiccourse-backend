@@ -9,6 +9,7 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const baseResponse = require("lib/base-response");
+const morgan = require('morgan');
 
 const app = express();
 const config = require("config");
@@ -19,6 +20,8 @@ database.addPlugins();
 database.connect();
 
 // settings
+app.use(morgan("dev"));
+
 app.use("/static", express.static(path.join(__dirname, "public")));
 
 app.use(baseResponse());
