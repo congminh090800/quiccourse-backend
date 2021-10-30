@@ -1,0 +1,119 @@
+[{
+  "_id": {
+    "$oid": "61748455a3966446b239dd87"
+  },
+  "email": "congminh090800@gmail.com",
+  "password": "$2a$10$vJDjs7TyLjyzPy3Q77qk/Ou17scR4g70wX43KoW6i5JuQe8yz1wYi",
+  "phone": "0866013782",
+  "name": "Le Minh",
+  "birthDate": {
+    "$date": "2021-10-23T21:53:25.021Z"
+  },
+  "deleted_flag": false,
+  "createdAt": {
+    "$date": "2021-10-23T21:53:25.026Z"
+  },
+  "updatedAt": {
+    "$date": "2021-10-23T21:53:25.026Z"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "617540443cd3edf1f42edecf"
+  },
+  "email": "tester1@gmail.com",
+  "password": "$2a$10$LSgqILQQBLEMb.YpYVaFKOhDW9J7Y3cPR/bRomce7CVoS1SuQYjIy",
+  "phone": "0866013122",
+  "name": "Tester",
+  "birthDate": {
+    "$date": "2021-10-24T11:15:16.131Z"
+  },
+  "deleted_flag": false,
+  "createdAt": {
+    "$date": "2021-10-24T11:15:16.137Z"
+  },
+  "updatedAt": {
+    "$date": "2021-10-24T11:15:16.137Z"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "6175407f3cd3edf1f42eded2"
+  },
+  "email": "tester2@gmail.com",
+  "password": "$2a$10$2Oqlo99qrkqcyV67EL6QKeMa6oEjUwg08XU36j7jAby4dHZnyyMye",
+  "phone": "0919500772",
+  "name": "Tester no.2",
+  "birthDate": {
+    "$date": "2021-10-24T11:16:15.194Z"
+  },
+  "deleted_flag": false,
+  "createdAt": {
+    "$date": "2021-10-24T11:16:15.195Z"
+  },
+  "updatedAt": {
+    "$date": "2021-10-24T11:16:15.195Z"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "61754d7b81dd1d44c3013172"
+  },
+  "email": "tester3@gmail.com",
+  "password": "$2a$10$ZqbWoW6yoQSqLVCTQwrk8uWTMexXwKUYvNudcvw73.FDjBfxqrV5y",
+  "phone": "0192498242",
+  "name": "Tester no.3",
+  "birthDate": {
+    "$date": "2021-10-24T12:11:39.341Z"
+  },
+  "gender": "male",
+  "deleted_flag": false,
+  "createdAt": {
+    "$date": "2021-10-24T12:11:39.346Z"
+  },
+  "updatedAt": {
+    "$date": "2021-10-24T12:11:39.346Z"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "6175a6f6ad68fc526e635632"
+  },
+  "email": "tester4@gmail.com",
+  "password": "$2a$10$LD5oNoE4.YxabwZHGgsPyuX016PU9fhpSZPd2CXeo6vou9GzrYcJy",
+  "phone": "0195698121",
+  "name": "Tester no.4",
+  "birthDate": {
+    "$date": "2018-03-20T09:12:28Z"
+  },
+  "gender": "female",
+  "deleted_flag": false,
+  "createdAt": {
+    "$date": "2021-10-24T18:33:26.334Z"
+  },
+  "updatedAt": {
+    "$date": "2021-10-24T18:33:26.334Z"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "61783ddb33047d8605b2cfba"
+  },
+  "email": "tester5@gmail.com",
+  "password": "$2a$10$.mWk5hbLBwfBs5rOClr.r.V8QnUr1Hi1kkfofBkVBi0Kdy3fItiqy",
+  "phone": "0195698333",
+  "name": "Tester no.5",
+  "birthDate": {
+    "$date": "2000-03-20T09:12:28Z"
+  },
+  "gender": "male",
+  "avatar": "",
+  "deleted_flag": false,
+  "createdAt": {
+    "$date": "2021-10-26T17:41:47.715Z"
+  },
+  "updatedAt": {
+    "$date": "2021-10-26T17:41:47.715Z"
+  },
+  "__v": 0
+}]

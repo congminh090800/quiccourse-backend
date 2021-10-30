@@ -1,0 +1,31 @@
+[{
+  "_id": {
+    "$oid": "617558ebbcde88b10881873e"
+  },
+  "userId": {
+    "$oid": "61748455a3966446b239dd87"
+  },
+  "deleted_flag": false,
+  "createdAt": {
+    "$date": "2021-10-24T13:00:27.798Z"
+  },
+  "updatedAt": {
+    "$date": "2021-10-24T13:00:27.798Z"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "6175aa36a3ca3d0b79d799db"
+  },
+  "userId": {
+    "$oid": "617540443cd3edf1f42edecf"
+  },
+  "deleted_flag": false,
+  "createdAt": {
+    "$date": "2021-10-24T18:47:19.001Z"
+  },
+  "updatedAt": {
+    "$date": "2021-10-24T18:47:19.001Z"
+  },
+  "__v": 0
+}]

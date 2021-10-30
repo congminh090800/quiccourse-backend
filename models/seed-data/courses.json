@@ -1,0 +1,339 @@
+[{
+  "_id": {
+    "$oid": "6175435c0b3ae2cfad6f44ba"
+  },
+  "name": "Test name",
+  "section": "Test section",
+  "subject": "Test subject",
+  "room": "Test room",
+  "code": "IhBjs",
+  "owner": {
+    "$oid": "61748455a3966446b239dd87"
+  },
+  "backgroundImg": "0",
+  "participants": [
+    {
+      "$oid": "617540443cd3edf1f42edecf"
+    }
+  ],
+  "deleted_flag": false,
+  "createdAt": {
+    "$date": "2021-10-24T11:28:28.594Z"
+  },
+  "updatedAt": {
+    "$date": "2021-10-24T11:28:28.594Z"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "61754c8b561a216df1e17301"
+  },
+  "name": "Test name",
+  "section": "Test section",
+  "subject": "Test subject",
+  "room": "Test room",
+  "code": "1jde7n0",
+  "owner": {
+    "$oid": "61748455a3966446b239dd87"
+  },
+  "backgroundImg": "1",
+  "participants": [
+    {
+      "$oid": "617540443cd3edf1f42edecf"
+    },
+    {
+      "$oid": "6175407f3cd3edf1f42eded2"
+    }
+  ],
+  "deleted_flag": false,
+  "createdAt": {
+    "$date": "2021-10-24T12:07:39.858Z"
+  },
+  "updatedAt": {
+    "$date": "2021-10-24T12:07:39.858Z"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "6175aec0dbe541a955afb7ff"
+  },
+  "name": "Test name no 3",
+  "section": "Test section no 3",
+  "subject": "Test subject no 3",
+  "room": "Test room no 3",
+  "code": "GXwNY",
+  "owner": {
+    "$oid": "61748455a3966446b239dd87"
+  },
+  "backgroundImg": "2",
+  "participants": [
+    {
+      "$oid": "617540443cd3edf1f42edecf"
+    },
+    {
+      "$oid": "6175407f3cd3edf1f42eded2"
+    }
+  ],
+  "deleted_flag": false,
+  "createdAt": {
+    "$date": "2021-10-24T19:06:40.931Z"
+  },
+  "updatedAt": {
+    "$date": "2021-10-24T19:06:40.931Z"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "617a391b1cc690e916ed6acb"
+  },
+  "name": "Nam no 4",
+  "section": "Section no 4",
+  "subject": "Sub no 4",
+  "room": "Room no 4",
+  "code": "GbqiQ7",
+  "owner": {
+    "$oid": "61748455a3966446b239dd87"
+  },
+  "backgroundImg": "3",
+  "participants": [
+    {
+      "$oid": "617540443cd3edf1f42edecf"
+    }
+  ],
+  "deleted_flag": false,
+  "createdAt": {
+    "$date": "2021-10-28T05:46:03.610Z"
+  },
+  "updatedAt": {
+    "$date": "2021-10-28T05:46:03.610Z"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "617ab1369195a727d641730f"
+  },
+  "name": "Test room no 5",
+  "section": "SEC 5",
+  "subject": "SUB 5",
+  "room": "ROOM 5",
+  "code": "rCAeF",
+  "owner": {
+    "$oid": "61748455a3966446b239dd87"
+  },
+  "backgroundImg": "4",
+  "participants": [
+    {
+      "$oid": "617540443cd3edf1f42edecf"
+    }
+  ],
+  "deleted_flag": false,
+  "createdAt": {
+    "$date": "2021-10-28T14:18:30.706Z"
+  },
+  "updatedAt": {
+    "$date": "2021-10-28T14:18:30.706Z"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "617ab6829195a727d641731f"
+  },
+  "name": "Test room no 5",
+  "section": "SEC 6",
+  "subject": "SUB 5",
+  "room": "ROOM 5",
+  "code": "KJp3D",
+  "owner": {
+    "$oid": "61748455a3966446b239dd87"
+  },
+  "backgroundImg": "5",
+  "participants": [],
+  "deleted_flag": false,
+  "createdAt": {
+    "$date": "2021-10-28T14:41:06.234Z"
+  },
+  "updatedAt": {
+    "$date": "2021-10-28T14:41:06.234Z"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "617ab85b9195a727d6417330"
+  },
+  "name": "minh room",
+  "section": "teeeee",
+  "subject": "ssssss",
+  "room": "ttttttt",
+  "code": "avN3DW",
+  "owner": {
+    "$oid": "61748455a3966446b239dd87"
+  },
+  "backgroundImg": "6",
+  "participants": [],
+  "deleted_flag": false,
+  "createdAt": {
+    "$date": "2021-10-28T14:48:59.345Z"
+  },
+  "updatedAt": {
+    "$date": "2021-10-28T14:48:59.345Z"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "617abd2c9195a727d641734b"
+  },
+  "name": "tester's class",
+  "section": "ssssssssssssss",
+  "subject": "ssssssssssss",
+  "room": "rrrrrrrrrrr",
+  "code": "7QnNX",
+  "owner": {
+    "$oid": "617540443cd3edf1f42edecf"
+  },
+  "backgroundImg": "7",
+  "participants": [],
+  "deleted_flag": false,
+  "createdAt": {
+    "$date": "2021-10-28T15:09:32.442Z"
+  },
+  "updatedAt": {
+    "$date": "2021-10-28T15:09:32.442Z"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "617abd8e9195a727d6417356"
+  },
+  "name": "ccccccccccccccccc",
+  "section": "sssssssssssss",
+  "subject": "sssssssssssssssss",
+  "room": "rrrrrrrrrrr",
+  "code": "DjviN",
+  "owner": {
+    "$oid": "617540443cd3edf1f42edecf"
+  },
+  "backgroundImg": "8",
+  "participants": [],
+  "deleted_flag": false,
+  "createdAt": {
+    "$date": "2021-10-28T15:11:10.424Z"
+  },
+  "updatedAt": {
+    "$date": "2021-10-28T15:11:10.424Z"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "617abddf9195a727d6417361"
+  },
+  "name": "qlwjeqlwkdjwl",
+  "section": "oiwueoqiw",
+  "subject": "dasdjjacn",
+  "room": "djsldj",
+  "code": "mdqlb",
+  "owner": {
+    "$oid": "617540443cd3edf1f42edecf"
+  },
+  "backgroundImg": "1",
+  "participants": [],
+  "deleted_flag": false,
+  "createdAt": {
+    "$date": "2021-10-28T15:12:31.529Z"
+  },
+  "updatedAt": {
+    "$date": "2021-10-28T15:12:31.529Z"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "617abfe8787b6225f315aedc"
+  },
+  "name": "asdasd",
+  "section": "sadasdasdas",
+  "subject": "asdasdasd",
+  "room": "asdasda",
+  "code": "7JlfyMW",
+  "owner": {
+    "$oid": "617540443cd3edf1f42edecf"
+  },
+  "backgroundImg": "1",
+  "participants": [],
+  "deleted_flag": false,
+  "createdAt": {
+    "$date": "2021-10-28T15:21:12.660Z"
+  },
+  "updatedAt": {
+    "$date": "2021-10-28T15:21:12.660Z"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "617ad901e39b059cc98ad7f9"
+  },
+  "name": "test last",
+  "section": "sec las",
+  "subject": "sub las",
+  "room": "room las",
+  "code": "UsZso87",
+  "owner": {
+    "$oid": "617540443cd3edf1f42edecf"
+  },
+  "backgroundImg": "1635583435558_the-big-picture-la-tu-vung-duoc-su-dung-pho-bien-trong-tieng-anh-thuong-mai.jpg",
+  "participants": [],
+  "deleted_flag": false,
+  "createdAt": {
+    "$date": "2021-10-28T17:08:17.612Z"
+  },
+  "updatedAt": {
+    "$date": "2021-10-28T17:08:17.612Z"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "617afeb1e39b059cc98ad967"
+  },
+  "name": "asdad",
+  "section": "dwqrq",
+  "subject": "wrwefsd",
+  "room": "dscx",
+  "code": "ckVXNGB",
+  "owner": {
+    "$oid": "61748455a3966446b239dd87"
+  },
+  "backgroundImg": "3",
+  "participants": [
+    {
+      "$oid": "617540443cd3edf1f42edecf"
+    }
+  ],
+  "deleted_flag": false,
+  "createdAt": {
+    "$date": "2021-10-28T19:49:05.631Z"
+  },
+  "updatedAt": {
+    "$date": "2021-10-28T19:49:05.631Z"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "617c261024eb0e8111263911"
+  },
+  "name": "Test name 29/10",
+  "section": "Test section 29/10",
+  "subject": "Test subject 29/10",
+  "room": "Test room 29/10",
+  "code": "a6JK7Kx",
+  "owner": {
+    "$oid": "617540443cd3edf1f42edecf"
+  },
+  "backgroundImg": "1635583358581_france-in-pictures-beautiful-places-to-photograph-eiffel-tower.jpg",
+  "participants": [],
+  "deleted_flag": false,
+  "createdAt": {
+    "$date": "2021-10-29T16:49:20.718Z"
+  },
+  "updatedAt": {
+    "$date": "2021-10-29T16:49:20.718Z"
+  },
+  "__v": 0
+}]
