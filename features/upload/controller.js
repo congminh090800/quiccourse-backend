@@ -1,5 +1,9 @@
 const { Course } = require("models");
 const mongoose = require("mongoose");
+const { uploadFile, getFile } = require("lib/database/s3");
+const fs = require("fs");
+const util = require("util");
+const unlinkFile = util.promisify(fs.unlink);
 
 module.exports = {
   uploadCover: async (req, res, next) => {
@@ -18,15 +22,32 @@ module.exports = {
         return res.badRequest("You are not the owner", "Permission denied");
       }
 
-      await Course.update(
+      const file = req.file;
+      const result = await uploadFile(file);
+      await unlinkFile(file.path);
+
+      await Course.updateOne(
         { _id: selectedCourse._id, deleted_flag: false },
         {
-          backgroundImg: req.file.path || "1",
+          backgroundImg: result.Key || "1",
         }
       );
-      res.ok(req.file.path || "1");
+
+      res.ok({ imagePath: `/images/${result.Key}` });
     } catch (err) {
       console.log("update cover failed", err);
+      next(err);
+    }
+  },
+  getImage: (req, res, next) => {
+    try {
+      const key = req.params.key;
+      res.set("Content-Type", "image/*");
+      res.set("Content-Disposition", `attachment; filename = ${key}`);
+      const readStream = getFile(key);
+      readStream.pipe(res);
+    } catch (err) {
+      console.log("get image failed", err);
       next(err);
     }
   },

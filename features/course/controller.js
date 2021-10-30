@@ -177,7 +177,7 @@ module.exports = {
         );
       }
 
-      const updated = await Course.update(
+      const updated = await Course.updateOne(
         { _id: selectedCourse._id, deleted_flag: false },
         {
           $push: {

@@ -12,6 +12,12 @@ const config = {
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     name: process.env.DB_NAME,
+    s3: {
+      name: process.env.AWS_BUCKET_NAME,
+      region: process.env.AWS_BUCKET_REGION,
+      accessKey: process.env.AWS_BUCKET_ACCESS_KEY,
+      secretKey: process.env.AWS_BUCKET_SECRET_KEY,
+    },
   },
   rateLimit: {
     requests: process.env.RATE_LIMIT_REQUESTS,

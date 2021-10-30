@@ -25,6 +25,8 @@ router.patch(
   controller.uploadCover
 );
 
+router.get("/images/:key", controller.getImage);
+
 module.exports = router;
 
 /**
@@ -52,4 +54,22 @@ module.exports = router;
  *          200:
  *              description: Return result
  *
+ */
+
+/**
+ * @swagger
+ * /api/images/{key}:
+ *  get:
+ *      tags:
+ *          - upload
+ *      summary: Load image
+ *      parameters:
+ *          -   name: key
+ *              in: path
+ *              schema:
+ *                  type: string
+ *                  required: true
+ *      responses:
+ *          200:
+ *              description: Return image file
  */
