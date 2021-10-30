@@ -42,7 +42,6 @@ module.exports = {
     try {
       const key = req.params.key;
       res.set("Content-Type", "image/*");
-      res.set("Content-Disposition", `attachment; filename = ${key}`);
       const readStream = getFile(key);
       readStream.pipe(res);
     } catch (err) {
