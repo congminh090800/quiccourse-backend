@@ -9,7 +9,7 @@ const authenticate = require("middlewares/authenticate.middleware");
 const multer = require("multer");
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "static/");
+    cb(null, "static");
   },
   filename: function (req, file, cb) {
     cb(null, `${Date.now()}_${file.originalname}`); //Appending extension

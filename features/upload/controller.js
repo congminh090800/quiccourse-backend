@@ -24,7 +24,6 @@ module.exports = {
 
       const file = req.file;
       const result = await uploadFile(file);
-      await unlinkFile(file.path);
 
       await Course.updateOne(
         { _id: selectedCourse._id, deleted_flag: false },
@@ -32,7 +31,7 @@ module.exports = {
           backgroundImg: result.Key || "1",
         }
       );
-
+      await unlinkFile(file.path);
       res.ok({ imagePath: `/images/${result.Key}` });
     } catch (err) {
       console.log("update cover failed", err);
