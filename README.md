@@ -14,8 +14,8 @@ To build the project:
 
 ## To host a database without internet
 
--Type: `mongorestore backup/` to init seed data
--Go to lib/database/index.js, uncomment the local connection string, and comment out the remote one
+-Type: `mongorestore backup/` to init seed data  
+-Go to lib/database/index.js, uncomment the local connection string, and comment out the remote one  
 -Now you can run the server without the internet ( but images will not load because it is hosting on aws cloud)
 
 Github: https://github.com/congminh090800/hcmus-course-backend  
