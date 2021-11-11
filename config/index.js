@@ -25,6 +25,8 @@ const config = {
   },
   secret: {
     accessToken: process.env.ACCESS_TOKEN_SECRET,
+    expiresIn: "86400000",
+    refreshToken: process.env.REFRESH_TOKEN_SECRET,
   },
 };
 

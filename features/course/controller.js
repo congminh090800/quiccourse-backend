@@ -86,7 +86,7 @@ module.exports = {
         sort: { createdAt: -1 },
         populate: {
           path: "owner participants",
-          select: "-password",
+          select: "-password -accessToken -refreshToken",
         },
         lean: true,
         offset: offset,
@@ -144,7 +144,7 @@ module.exports = {
         sort: { createdAt: -1 },
         populate: {
           path: "owner participants",
-          select: "-password",
+          select: "-password -accessToken -refreshToken",
         },
         lean: true,
         offset: offset,

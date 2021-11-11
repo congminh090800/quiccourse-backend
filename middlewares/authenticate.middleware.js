@@ -10,7 +10,7 @@ module.exports = function (req, res, next) {
 
   jwt.verify(token, config.secret.accessToken, (err, user) => {
     if (err) {
-      return res.forbidden("Forbidden", "Token is not verified");
+      return res.forbidden(err.name, "Forbidden");
     } else {
       req.user = user;
       next();
