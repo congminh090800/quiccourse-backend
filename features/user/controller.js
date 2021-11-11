@@ -62,7 +62,7 @@ module.exports = {
       const accessToken = jwt.sign(
         { id: user._id },
         config.secret.accessToken,
-        { expiresIn: "15s" }
+        { expiresIn: "10h" }
       );
       const refreshToken = jwt.sign(
         { id: user._id },
@@ -167,7 +167,7 @@ module.exports = {
         const accessToken = jwt.sign(
           { id: result.id },
           config.secret.accessToken,
-          { expiresIn: "15s" }
+          { expiresIn: "10h" }
         );
         User.findByIdAndUpdate(
           result.id,
