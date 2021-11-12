@@ -30,4 +30,8 @@ On documentation page,
 remember to bind access token received from `signIn` to authorize modal at the top right of the page
 because most apis require authentication
 
+# 12/11/2021 Note:
+
+Document link not usable if you are using google authentication
+
 Enjoy the walkthrough!!

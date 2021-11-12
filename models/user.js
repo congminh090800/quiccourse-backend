@@ -42,6 +42,14 @@ const userSchema = new Schema(
     refreshToken: {
       type: String,
     },
+    authenticationType: {
+      type: String,
+      enum: ["native", "google"],
+      default: "native",
+    },
+    googleId: {
+      type: String,
+    },
     deleted_flag: { type: Boolean, default: false },
   },
   { timestamps: true }
