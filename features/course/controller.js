@@ -1,6 +1,8 @@
 const { Course, User } = require("models");
 const { generateRoomCode } = require("lib/regex-helpers");
+const { generateRandomString } = require("lib/string-helpers");
 const mongoose = require("mongoose");
+const e = require("express");
 
 module.exports = {
   create: async (req, res, next) => {
@@ -37,8 +39,8 @@ module.exports = {
         backgroundImg: body.backgroundImg ? body.backgroundImg : "",
         participants: participants
           ? participants.map((participant) =>
-              mongoose.Types.ObjectId(participant)
-            )
+            mongoose.Types.ObjectId(participant)
+          )
           : [],
       });
 
@@ -191,4 +193,65 @@ module.exports = {
       next(err);
     }
   },
+  createInvitationLink: async (req, res, next) => {
+    const { courseCode } = req.params;
+
+    try {
+      const course = await Course.findOne({ code: courseCode });
+
+      if (!course) {
+        return res.notFound("Class does not exist", "Class does not exist");
+      }
+
+      if (course.owner.toString() !== req.user.id) {
+        return res.badRequest(
+          "You are not the owner of this class",
+          "INVALID_OWNER"
+        );
+      }
+
+      const currentDate = new Date();
+      const expiredDate = new Date().setHours(currentDate.getHours() + 12); //Set expired date to 12 hours later
+
+      await Course.findByIdAndUpdate(course._id, { invitation_expired_date: expiredDate });
+
+      return res.ok({ expiredDate });
+    } catch (error) {
+      console.log("Create invitation link failed", error);
+      next(error);
+    }
+  },
+  participateByLink: async (req, res, next) => {
+    try {
+      const userId = req.user.id;
+      const code = req.params.courseCode;
+
+      let course = await Course.findOne({ code: code });
+      if (!course) {
+        return res.notFound("Invitation key invalid", "INVALID_INVITAION_KEY");
+      }
+
+      const isExpired = course.invitation_expired_date < Date.now();
+      if (isExpired) {
+        return res.forbidden("Invitation key is expired", "EXPIRED_INVITATION_KEY");
+      }
+
+      if (course.participants.includes(userId)) {
+        return res.badRequest(
+          "User are already in the class",
+          "User are already in the class"
+        );
+      }
+
+      course.participants.push(userId);
+      await Course.findByIdAndUpdate(course.id, {
+        $push: {
+          participants: userId,
+        },
+      });
+      res.ok(true);
+    } catch (err) {
+      console.log(err);
+    }
+  }
 };

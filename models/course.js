@@ -47,6 +47,16 @@ const courseSchema = new Schema(
       ],
       default: [],
     },
+    teachers: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "User",
+        }
+      ],
+      default: [],
+    },
+    invitation_expired_date: { type: Number, default: 0 },
     deleted_flag: { type: Boolean, default: false },
   },
   { timestamps: true }
