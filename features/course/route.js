@@ -5,6 +5,7 @@ const validator = require("middlewares/validator.middleware");
 const requestSchema = require("./validator");
 const authenticate = require("middlewares/authenticate.middleware");
 const authorize = require("middlewares/authorize.middleware");
+const roleAuthorize = require("middlewares/role_authorize.middleware");
 
 router.post(
   "/courses",
@@ -36,14 +37,24 @@ router.patch(
 
 router.patch(
   "/courses/invite/create/:courseCode",
+  validator(requestSchema.invitation, "params"),
   authenticate,
   controller.createInvitationLink
 )
 
 router.patch(
   "/courses/invite/:courseCode",
+  validator(requestSchema.invitation, "params"),
   authenticate,
   controller.participateByLink
+);
+
+router.post(
+  "/courses/invite/email/send",
+  validator(requestSchema.sendInvitation),
+  authenticate,
+  roleAuthorize,
+  controller.sendInvitationEmail
 );
 
 module.exports = router;
@@ -179,4 +190,66 @@ module.exports = router;
  *      responses:
  *          200:
  *              description: Return update info
+ */
+
+/**
+ * @swagger
+ * /api/courses/invite/create/:courseCode:
+ *  patch:
+ *      tags:
+ *          - course
+ *      summary: Create new expired date for invitation link
+ *      parameters:
+ *          -   name: courseCode
+ *              in: path
+ *              required: true
+ *              schema:
+ *                  type: string
+ *      responses:
+ *          200:
+ *              description: Return new expired date for invitation link
+ */
+
+/**
+ * @swagger
+ * /api/courses/invite/:courseCode:
+ *  patch:
+ *      tags:
+ *         - course
+ *      summary: Add userId to class participant list
+ *      parameters:
+ *         -  name: courseCode
+ *            in: path
+ *            required: true
+ *            schema:
+ *                type: string
+ *      responses:
+ *          200:
+ *              description: Return "true"
+ *
+ */
+
+/**
+ * @swagger
+ * /api/courses/invite/email/send:
+ *  patch:
+ *      tags:
+ *         - course
+ *      summary: Send invitation link to target emails
+ *      requestBody:
+ *          description: Target emails and courseId
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      example:
+ *                           {
+ *                               "emails": ["test@gmail.com", "test1@gmail.com"],
+ *                               "courseId" : "618ea2aa952e5bdf038a8e5c"
+ *                           }
+ *      responses:
+ *          200:
+ *              description: Return "true"
+ *
  */

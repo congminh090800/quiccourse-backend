@@ -1,6 +1,8 @@
 const { Course, User } = require("models");
 const { generateRoomCode } = require("lib/regex-helpers");
 const mongoose = require("mongoose");
+const nodemailer = require("nodemailer");
+const config = require("../../config");
 
 module.exports = {
   create: async (req, res, next) => {
@@ -169,6 +171,7 @@ module.exports = {
         code: codeRoom,
         deleted_flag: false,
       });
+      
       if (!selectedCourse) {
         return res.notFound("Class does not exist", "Class does not exist");
       }
@@ -179,7 +182,7 @@ module.exports = {
           "User are already in the class"
         );
       }
-
+      
       const updated = await Course.updateOne(
         { _id: selectedCourse._id, deleted_flag: false },
         {
@@ -188,6 +191,7 @@ module.exports = {
           },
         }
       );
+      
       res.ok(selectedCourse);
     } catch (err) {
       console.log("participate failed", err);
@@ -224,7 +228,7 @@ module.exports = {
       next(error);
     }
   },
-  participateByLink: async (req, res, next) => {
+  participateByLink: async (req, res) => {
     try {
       const userId = req.user.id;
       const code = req.params.courseCode;
@@ -260,4 +264,41 @@ module.exports = {
       console.log(err);
     }
   },
+  sendInvitationEmail: async (req, res) => {
+    const { emails } = req.body;
+    const course = req.course;
+    const userId = req.user.id;
+
+    if (!course.owner.equals(userId)) {
+      return res.forbidden("Forbiden", "NO_PERMISSION_USER");
+    }
+
+    try {
+      const transporter = nodemailer.createTransport({
+        host: "smtp.mailtrap.io",
+        port: 25,
+        secure: false, // true for 465, false for other ports
+        auth: {
+          user: config.mailtrap.username,
+          pass: config.mailtrap.password,
+        },
+      });
+
+      const acceptLink = `${config.frontendHost}/courses/paticipate/${course.code}`;
+
+      const mailOptions = await transporter.sendMail({
+        from: '"HCMUS Course" <course@hcmus.com>', // sender address
+        to: emails.join(), // list of receivers
+        subject: "Join class invitation ✔", // Subject line
+        html: "<p>Click <a href=" + acceptLink + ">this link</a> to accept join class invitation</p>", // html body
+      });
+
+      transporter.sendMail(mailOptions, (err) => {
+        if (err) return res.failure(err.message, err.name);
+        res.ok(true);
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }
 };
