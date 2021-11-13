@@ -33,6 +33,19 @@ router.patch(
   authenticate,
   controller.participate
 );
+
+router.patch(
+  "/courses/invite/create/:courseCode",
+  authenticate,
+  controller.createInvitationLink
+)
+
+router.patch(
+  "/courses/invite/:courseCode",
+  authenticate,
+  controller.participateByLink
+);
+
 module.exports = router;
 
 /**
