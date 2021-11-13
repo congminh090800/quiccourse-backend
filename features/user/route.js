@@ -14,6 +14,12 @@ router.post("/signin", validator(requestSchema.signIn), controller.signIn);
 
 router.post("/createAdmin", authenticate, authorize, controller.createAdmin);
 
+router.post(
+  "/refreshToken",
+  validator(requestSchema.refreshToken),
+  controller.refreshToken
+);
+
 router.get("/user/:id", authenticate, controller.findById);
 
 module.exports = router;
@@ -140,4 +146,33 @@ module.exports = router;
  *      responses:
  *          200:
  *              description: Return user info
+ */
+
+/**
+ * @swagger
+ * /api/refreshToken:
+ *  post:
+ *      tags:
+ *          - user
+ *      summary: Refresh jwt
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      example:
+ *                          {
+ *                               "userId": "61748455a3966446b239dd87",
+ *                               "refreshToken": "some-token"
+ *                           }
+ *      responses:
+ *          200:
+ *              description: Return new access token
+ *              examples:
+ *                  application/json:
+ *                      {
+ *                          "data": "new-token"
+ *                      }
+ *
  */

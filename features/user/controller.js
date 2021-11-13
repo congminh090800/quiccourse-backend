@@ -59,11 +59,33 @@ module.exports = {
         return res.unauthorized("Unauthorized", "UNAUTHORIZED");
       }
 
-      const accessToken = jwt.sign({ id: user._id }, config.secret.accessToken);
-      user.password = undefined;
+      const accessToken = jwt.sign(
+        { id: user._id },
+        config.secret.accessToken,
+        { expiresIn: "10h" }
+      );
+      const refreshToken = jwt.sign(
+        { id: user._id },
+        config.secret.refreshToken,
+        { expiresIn: config.secret.expiresIn }
+      );
+
+      const updated = await User.findByIdAndUpdate(
+        user._id,
+        {
+          accessToken,
+          refreshToken,
+        },
+        {
+          returnDocument: "after",
+        }
+      );
+      updated.password = undefined;
       return res.ok({
         accessToken: accessToken,
-        user: user,
+        refreshToken: refreshToken,
+        expiredAt: new Date() + Number(config.secret.expiresIn),
+        user: updated,
       });
     } catch (err) {
       console.log("sign in failed:", err);
@@ -104,19 +126,17 @@ module.exports = {
   },
   findById: async (req, res, next) => {
     try {
-      console.log(req.params);
       const { id } = req.params;
       const existed = await User.findOne(
         {
           _id: mongoose.Types.ObjectId(id),
           deleted_flag: false,
         },
-        "-password"
+        "-password -accessToken -refreshToken"
       );
       if (!existed) {
         return res.notFound("User does not exist", "User does not exist");
       }
-      console.log(existed);
       return res.ok(existed);
     } catch (err) {
       console.log("find user by id failed", err);
@@ -130,6 +150,44 @@ module.exports = {
       return res.ok(existed);
     } catch (err) {
       console.log("find user by id failed", err);
+      next(err);
+    }
+  },
+  refreshToken: async (req, res, next) => {
+    try {
+      const { refreshToken, userId } = req.body;
+      const user = await User.findById(userId);
+      if (!user || user.refreshToken != refreshToken) {
+        return res.notFound("Invalid refresh token", "Not found");
+      }
+      jwt.verify(refreshToken, config.secret.refreshToken, (err, result) => {
+        if (err) {
+          return res.badRequest(err.name, err.name);
+        }
+        const accessToken = jwt.sign(
+          { id: result.id },
+          config.secret.accessToken,
+          { expiresIn: "10h" }
+        );
+        User.findByIdAndUpdate(
+          result.id,
+          {
+            accessToken,
+          },
+          {
+            returnDocument: "after",
+          },
+          (err, doc) => {
+            if (err) {
+              throw err;
+            } else {
+              res.ok(doc.accessToken);
+            }
+          }
+        );
+      });
+    } catch (err) {
+      console.log("refreshToken failed:", err);
       next(err);
     }
   },

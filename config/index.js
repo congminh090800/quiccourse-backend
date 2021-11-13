@@ -25,6 +25,14 @@ const config = {
   },
   secret: {
     accessToken: process.env.ACCESS_TOKEN_SECRET,
+    expiresIn: "86400000",
+    refreshToken: process.env.REFRESH_TOKEN_SECRET,
+  },
+  google: {
+    authorizeKey: process.env.GOOGLE_AUTHORIZATION_KEY,
+    authorizeUrl:
+      process.env.GOOGLE_AUTHORIZATION_URL ||
+      "https://www.googleapis.com/oauth2/v3/",
   },
 };
 

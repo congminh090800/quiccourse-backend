@@ -6,10 +6,8 @@ const userSchema = new Schema(
   {
     email: {
       type: String,
-      // trim: true,
-      // lowercase: true,
-      // unique: true,
-      // required: true,
+      unique: true,
+      required: true,
       min: 13,
     },
     password: {
@@ -36,6 +34,20 @@ const userSchema = new Schema(
       enum: ["male", "female"],
     },
     avatar: {
+      type: String,
+    },
+    accessToken: {
+      type: String,
+    },
+    refreshToken: {
+      type: String,
+    },
+    authenticationType: {
+      type: String,
+      enum: ["native", "google"],
+      default: "native",
+    },
+    googleId: {
       type: String,
     },
     deleted_flag: { type: Boolean, default: false },
