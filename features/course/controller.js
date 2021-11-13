@@ -268,9 +268,9 @@ module.exports = {
   },
   detail: async (req, res, next) => {
     try {
-      const { id } = req.params;
+      const { code } = req.params;
       const where = {
-        _id: id,
+        code: code,
         deleted_flag: false,
         $or: [
           {

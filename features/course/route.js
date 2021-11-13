@@ -49,7 +49,7 @@ router.patch(
   controller.participateByLink
 );
 
-router.get("/courses/me/:id", authenticate, controller.detail);
+router.get("/courses/me/:code", authenticate, controller.detail);
 
 router.post(
   "/courses/invite/email/send",
@@ -258,13 +258,13 @@ module.exports = router;
 
 /**
  * @swagger
- * /api/courses/me/{id}:
+ * /api/courses/me/{code}:
  *  get:
  *      tags:
  *          - course
  *      summary: Get course detail
  *      parameters:
- *          -   name: id
+ *          -   name: code
  *              in: path
  *              schema:
  *                  type: string
