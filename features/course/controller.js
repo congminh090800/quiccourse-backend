@@ -39,8 +39,8 @@ module.exports = {
         backgroundImg: body.backgroundImg ? body.backgroundImg : "",
         participants: participants
           ? participants.map((participant) =>
-            mongoose.Types.ObjectId(participant)
-          )
+              mongoose.Types.ObjectId(participant)
+            )
           : [],
       });
 
@@ -338,7 +338,7 @@ module.exports = {
     const { emails } = req.body;
     const course = req.course;
     const requestUserId = req.user.id;
-    const requestHost = req.get("host");
+    const requestHost = req.get("origin");
 
     if (!course.owner.equals(requestUserId)) {
       return res.forbidden("Forbiden", "NO_PERMISSION_USER");
@@ -351,7 +351,7 @@ module.exports = {
       for (let user of users) {
         if (user._id !== requestUserId) {
           const timestamp = Date.now();
-          const key = `${timestamp}!${course.code}`
+          const key = `${timestamp}!${course.code}`;
           let invitation = new Invitation({
             userId: user._id,
             courseId: course._id,
@@ -366,7 +366,10 @@ module.exports = {
             from: '"HCMUS Course" <course@hcmus.com>', // sender address
             to: user.email, // list of receivers
             subject: "Join class invitation ✔", // Subject line
-            html: "<p>Click <a href=" + acceptLink + ">this link</a> to accept join class invitation</p>", // html body
+            html:
+              "<p>Click <a href=" +
+              acceptLink +
+              ">this link</a> to accept join class invitation</p>", // html body
           });
 
           transporter.sendMail(mailOptions, (err) => {
@@ -386,13 +389,19 @@ module.exports = {
     const timestamp = extractedKey[0];
 
     if (new Date(timestamp) < Date.now()) {
-      return res.forbidden("Invitation key is expired", "EXPIRED_INVITATION_KEY");
+      return res.forbidden(
+        "Invitation key is expired",
+        "EXPIRED_INVITATION_KEY"
+      );
     }
 
     try {
       const invitation = await Invitation.findOne({ key: key });
       if (!invitation) {
-        return res.badRequest("Invitation key invalid", "INVALID_INVITAION_KEY");
+        return res.badRequest(
+          "Invitation key invalid",
+          "INVALID_INVITAION_KEY"
+        );
       }
 
       if (!invitation.userId.equals(requestUserId)) {
@@ -400,7 +409,10 @@ module.exports = {
       }
 
       if (invitation.isUsed) {
-        return res.badRequest("Invitation key is used", "INVALID_INVITAION_KEY");
+        return res.badRequest(
+          "Invitation key is used",
+          "INVALID_INVITAION_KEY"
+        );
       }
 
       const course = await Course.findById(invitation.courseId);
@@ -409,19 +421,27 @@ module.exports = {
       }
 
       if (course.participants.includes(requestUserId)) {
-        return res.badRequest("User is already in the class", "USER_ALREADY_IN_CLASS");
+        return res.badRequest(
+          "User is already in the class",
+          "USER_ALREADY_IN_CLASS"
+        );
       }
 
       if (course.teachers.includes(requestUserId)) {
-        return res.badRequest("User is already a teacher in the class", "USER_ALREADY_IN_CLASS");
+        return res.badRequest(
+          "User is already a teacher in the class",
+          "USER_ALREADY_IN_CLASS"
+        );
       }
 
-      await Course.findByIdAndUpdate(course.id, { $push: { teachers: requestUserId } });
+      await Course.findByIdAndUpdate(course.id, {
+        $push: { teachers: requestUserId },
+      });
       await Invitation.findByIdAndUpdate(invitation.id, { isUsed: true });
 
       res.ok(true);
     } catch (err) {
       console.log(err);
     }
-  }
+  },
 };
