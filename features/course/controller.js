@@ -363,13 +363,10 @@ module.exports = {
           const acceptLink = `${requestHost}/courses/participate/${key}`;
 
           const mailOptions = await transporter.sendMail({
-            from: '"HCMUS Course" <course@hcmus.com>', // sender address
+            from: '"HCMUS Course" <hcmus.course@gmail.com>', // sender address
             to: user.email, // list of receivers
             subject: "Join class invitation ✔", // Subject line
-            html:
-              "<p>Click <a href=" +
-              acceptLink +
-              ">this link</a> to accept join class invitation</p>", // html body
+            html: `<p>Click <a href="${acceptLink}">this link</a> to accept join class invitation</p>`, // html body
           });
 
           transporter.sendMail(mailOptions, (err) => {
