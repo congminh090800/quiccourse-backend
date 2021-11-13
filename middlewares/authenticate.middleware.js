@@ -24,13 +24,14 @@ module.exports = async function (req, res, next) {
       if (googleData["aud"] != config.google.authorizeKey) {
         throw "Wrong app";
       }
-      const user = await User.findOne({
+      let user = await User.findOne({
         googleId: googleData["sub"],
         deleted_flag: false,
       });
       if (!user) {
         return res.forbidden("user not exist", "Forbidden");
       }
+      console.log(user.id);
       req.user = user;
       next();
     } catch (err) {

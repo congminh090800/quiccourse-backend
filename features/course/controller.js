@@ -37,8 +37,8 @@ module.exports = {
         backgroundImg: body.backgroundImg ? body.backgroundImg : "",
         participants: participants
           ? participants.map((participant) =>
-            mongoose.Types.ObjectId(participant)
-          )
+              mongoose.Types.ObjectId(participant)
+            )
           : [],
       });
 
@@ -120,6 +120,9 @@ module.exports = {
           },
           {
             participants: mongoose.Types.ObjectId(req.user.id),
+          },
+          {
+            teachers: mongoose.Types.ObjectId(req.user.id),
           },
         ],
       };
@@ -211,7 +214,9 @@ module.exports = {
       const currentDate = new Date();
       const expiredDate = new Date().setHours(currentDate.getHours() + 12); //Set expired date to 12 hours later
 
-      await Course.findByIdAndUpdate(course._id, { invitation_expired_date: expiredDate });
+      await Course.findByIdAndUpdate(course._id, {
+        invitation_expired_date: expiredDate,
+      });
 
       return res.ok({ expiredDate });
     } catch (error) {
@@ -231,7 +236,10 @@ module.exports = {
 
       const isExpired = course.invitation_expired_date < Date.now();
       if (isExpired) {
-        return res.forbidden("Invitation key is expired", "EXPIRED_INVITATION_KEY");
+        return res.forbidden(
+          "Invitation key is expired",
+          "EXPIRED_INVITATION_KEY"
+        );
       }
 
       if (course.participants.includes(userId)) {
@@ -251,5 +259,5 @@ module.exports = {
     } catch (err) {
       console.log(err);
     }
-  }
+  },
 };
