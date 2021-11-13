@@ -305,23 +305,16 @@ module.exports = {
     const { emails } = req.body;
     const course = req.course;
     const userId = req.user.id;
+    const requestHost = req.get("host");
 
     if (!course.owner.equals(userId)) {
       return res.forbidden("Forbiden", "NO_PERMISSION_USER");
     }
 
     try {
-      const transporter = nodemailer.createTransport({
-        host: "smtp.mailtrap.io",
-        port: 25,
-        secure: false, // true for 465, false for other ports
-        auth: {
-          user: config.mailtrap.username,
-          pass: config.mailtrap.password,
-        },
-      });
+      const transporter = nodemailer.createTransport(config.nodemailerConfig);
 
-      const acceptLink = `${config.frontendHost}/courses/paticipate/${course.code}`;
+      const acceptLink = `${requestHost}/courses/paticipate/${course.code}`;
 
       const mailOptions = await transporter.sendMail({
         from: '"HCMUS Course" <course@hcmus.com>', // sender address
@@ -345,6 +338,7 @@ module.exports = {
     const { emails } = req.body;
     const course = req.course;
     const requestUserId = req.user.id;
+    const requestHost = req.get("host");
 
     if (!course.owner.equals(requestUserId)) {
       return res.forbidden("Forbiden", "NO_PERMISSION_USER");
@@ -353,16 +347,7 @@ module.exports = {
     const users = await User.find({ email: { $in: emails } });
 
     try {
-      const transporter = nodemailer.createTransport({
-        host: "smtp.mailtrap.io",
-        port: 25,
-        secure: false, // true for 465, false for other ports
-        auth: {
-          user: config.mailtrap.username,
-          pass: config.mailtrap.password,
-        },
-      });
-
+      const transporter = nodemailer.createTransport(config.nodemailerConfig);
       for (let user of users) {
         if (user._id !== requestUserId) {
           const timestamp = Date.now();
@@ -375,7 +360,7 @@ module.exports = {
 
           invitation = await invitation.save();
 
-          const acceptLink = `${config.frontendHost}/courses/participate/${key}`;
+          const acceptLink = `${requestHost}/courses/participate/${key}`;
 
           const mailOptions = await transporter.sendMail({
             from: '"HCMUS Course" <course@hcmus.com>', // sender address

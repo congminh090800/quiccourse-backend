@@ -38,7 +38,16 @@ const config = {
     username: process.env.MAILTRAP_USERNAME,
     password: process.env.MAILTRAP_PASSWORD
   },
-  frontendHost: "http://localhost:3000"
+  nodemailerConfig: {
+    service: process.env.EMAIL_SERVICE,
+    host: process.env.EMAIL_HOST,
+    port: process.env.EMAIL_PORT,
+    secure: process.env.EMAIL_SECURE, // true for 465, false for other ports
+    auth: {
+      user: process.env.EMAIL_USERNAME,
+      pass: process.env.EMAIL_PASSWORD,
+    },
+  }
 };
 
 module.exports = config;
