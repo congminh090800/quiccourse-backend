@@ -34,6 +34,11 @@ const config = {
       process.env.GOOGLE_AUTHORIZATION_URL ||
       "https://www.googleapis.com/oauth2/v3/",
   },
+  mailtrap: {
+    username: process.env.MAILTRAP_USERNAME,
+    password: process.env.MAILTRAP_PASSWORD
+  },
+  frontendHost: "http://localhost:3000"
 };
 
 module.exports = config;
