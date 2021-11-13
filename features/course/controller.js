@@ -1,8 +1,6 @@
 const { Course, User } = require("models");
 const { generateRoomCode } = require("lib/regex-helpers");
-const { generateRandomString } = require("lib/string-helpers");
 const mongoose = require("mongoose");
-const e = require("express");
 
 module.exports = {
   create: async (req, res, next) => {
