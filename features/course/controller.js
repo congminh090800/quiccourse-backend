@@ -168,6 +168,7 @@ module.exports = {
         code: codeRoom,
         deleted_flag: false,
       });
+      
       if (!selectedCourse) {
         return res.notFound("Class does not exist", "Class does not exist");
       }
@@ -178,7 +179,16 @@ module.exports = {
           "User are already in the class"
         );
       }
-
+      
+      const updated = await Course.updateOne(
+        { _id: selectedCourse._id, deleted_flag: false },
+        {
+          $push: {
+            participants: id,
+          },
+        }
+      );
+      
       res.ok(selectedCourse);
     } catch (err) {
       console.log("participate failed", err);
