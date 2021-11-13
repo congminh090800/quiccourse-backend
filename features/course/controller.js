@@ -1,4 +1,4 @@
-const { Course, User } = require("models");
+const { Course, User, Invitation } = require("models");
 const { generateRoomCode } = require("lib/regex-helpers");
 const mongoose = require("mongoose");
 const nodemailer = require("nodemailer");
@@ -288,6 +288,104 @@ module.exports = {
         if (err) return res.failure(err.message, err.name);
         res.ok(true);
       });
+    } catch (err) {
+      console.log(err);
+    }
+  },
+  sendTeachersInvitationEmail: async (req, res) => {
+    const { emails } = req.body;
+    const course = req.course;
+    const requestUserId = req.user.id;
+
+    if (!course.owner.equals(requestUserId)) {
+      return res.forbidden("Forbiden", "NO_PERMISSION_USER");
+    }
+
+    const users = await User.find({ email: { $in: emails } });
+
+    try {
+      const transporter = nodemailer.createTransport({
+        host: "smtp.mailtrap.io",
+        port: 25,
+        secure: false, // true for 465, false for other ports
+        auth: {
+          user: config.mailtrap.username,
+          pass: config.mailtrap.password,
+        },
+      });
+
+      for (let user of users) {
+        if (user._id !== requestUserId) {
+          const timestamp = Date.now();
+          const key = `${timestamp}!${course.code}`
+          let invitation = new Invitation({
+            userId: user._id,
+            courseId: course._id,
+            key: key,
+          });
+
+          invitation = await invitation.save();
+
+          const acceptLink = `${config.frontendHost}/courses/participate/${key}`;
+
+          const mailOptions = await transporter.sendMail({
+            from: '"HCMUS Course" <course@hcmus.com>', // sender address
+            to: user.email, // list of receivers
+            subject: "Join class invitation ✔", // Subject line
+            html: "<p>Click <a href=" + acceptLink + ">this link</a> to accept join class invitation</p>", // html body
+          });
+
+          transporter.sendMail(mailOptions, (err) => {
+            if (err) return res.failure(err.message, err.name);
+          });
+        }
+      }
+      res.ok(true);
+    } catch (err) {
+      console.log(err);
+    }
+  },
+  teacherParticipateByLink: async (req, res) => {
+    const requestUserId = req.user.id;
+    const key = req.params.key;
+    const extractedKey = key.split("!");
+    const timestamp = extractedKey[0];
+
+    if (new Date(timestamp) < Date.now()) {
+      return res.forbidden("Invitation key is expired", "EXPIRED_INVITATION_KEY");
+    }
+
+    try {
+      const invitation = await Invitation.findOne({ key: key });
+      if (!invitation) {
+        return res.badRequest("Invitation key invalid", "INVALID_INVITAION_KEY");
+      }
+
+      if (!invitation.userId.equals(requestUserId)) {
+        return res.forbidden("Forbiden", "NO_PERMISSION_USER");
+      }
+
+      if (invitation.isUsed) {
+        return res.badRequest("Invitation key is used", "INVALID_INVITAION_KEY");
+      }
+
+      const course = await Course.findById(invitation.courseId);
+      if (!course) {
+        return res.notFound("Class does not exist", "CLASS_NOT_EXISTS");
+      }
+
+      if (course.participants.includes(requestUserId)) {
+        return res.badRequest("User is already in the class", "USER_ALREADY_IN_CLASS");
+      }
+
+      if (course.teachers.includes(requestUserId)) {
+        return res.badRequest("User is already a teacher in the class", "USER_ALREADY_IN_CLASS");
+      }
+
+      await Course.findByIdAndUpdate(course.id, { $push: { teachers: requestUserId } });
+      await Invitation.findByIdAndUpdate(invitation.id, { isUsed: true });
+
+      res.ok(true);
     } catch (err) {
       console.log(err);
     }

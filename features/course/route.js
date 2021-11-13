@@ -57,6 +57,21 @@ router.post(
   controller.sendInvitationEmail
 );
 
+router.post(
+  "/courses/invite/email/send-teachers",
+  validator(requestSchema.sendInvitation),
+  authenticate,
+  roleAuthorize,
+  controller.sendTeachersInvitationEmail
+);
+
+router.patch(
+  "/courses/invite/teacher/:key",
+  validator(requestSchema.teacherInvitation, "params"),
+  authenticate,
+  controller.teacherParticipateByLink
+);
+
 module.exports = router;
 
 /**
@@ -194,7 +209,7 @@ module.exports = router;
 
 /**
  * @swagger
- * /api/courses/invite/create/:courseCode:
+ * /api/courses/invite/create/{courseCode}:
  *  patch:
  *      tags:
  *          - course
@@ -212,7 +227,7 @@ module.exports = router;
 
 /**
  * @swagger
- * /api/courses/invite/:courseCode:
+ * /api/courses/invite/{courseCode}:
  *  patch:
  *      tags:
  *         - course
@@ -248,6 +263,50 @@ module.exports = router;
  *                               "emails": ["test@gmail.com", "test1@gmail.com"],
  *                               "courseId" : "618ea2aa952e5bdf038a8e5c"
  *                           }
+ *      responses:
+ *          200:
+ *              description: Return "true"
+ *
+ */
+
+/**
+ * @swagger
+ * /api/courses/invite/email/send-teachers:
+ *  post:
+ *      tags:
+ *         - course
+ *      summary: Send invitation link to teachers emails
+ *      requestBody:
+ *          description: Target teachers emails and courseId
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      example:
+ *                           {
+ *                               "emails": ["test@gmail.com", "test1@gmail.com"],
+ *                               "courseId" : "618ea2aa952e5bdf038a8e5c"
+ *                           }
+ *      responses:
+ *          200:
+ *              description: Return "true"
+ *
+ */
+
+/**
+ * @swagger
+ * /api/courses/invite/teacher/{key}:
+ *  post:
+ *      tags:
+ *         - course
+ *      summary: Add teacher to class teacher list by invitation link sent to teacher
+ *      parameters:
+ *         -  name: key
+ *            in: path
+ *            required: true
+ *            schema:
+ *                type: string
  *      responses:
  *          200:
  *              description: Return "true"
