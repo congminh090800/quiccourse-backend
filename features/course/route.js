@@ -38,13 +38,15 @@ router.patch(
   "/courses/invite/create/:courseCode",
   authenticate,
   controller.createInvitationLink
-)
+);
 
 router.patch(
   "/courses/invite/:courseCode",
   authenticate,
   controller.participateByLink
 );
+
+router.get("/courses/me/:id", authenticate, controller.detail);
 
 module.exports = router;
 
@@ -179,4 +181,21 @@ module.exports = router;
  *      responses:
  *          200:
  *              description: Return update info
+ */
+
+/**
+ * @swagger
+ * /api/courses/me/{id}:
+ *  get:
+ *      tags:
+ *          - course
+ *      summary: Get course detail
+ *      parameters:
+ *          -   name: id
+ *              in: path
+ *              schema:
+ *                  type: string
+ *      responses:
+ *          200:
+ *              description: Return list with pagination
  */
