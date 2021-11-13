@@ -25,6 +25,13 @@ router.patch(
   controller.uploadCover
 );
 
+router.patch(
+  "/upload/upload-avatar",
+  upload.single("imgFile"),
+  authenticate,
+  controller.uploadAvatar
+);
+
 router.get("/images/:key", controller.getImage);
 
 module.exports = router;
@@ -72,4 +79,28 @@ module.exports = router;
  *      responses:
  *          200:
  *              description: Return image file
+ */
+
+/**
+ * @swagger
+ * /api/upload/upload-avatar:
+ *  patch:
+ *      tags:
+ *          - upload
+ *      summary: Upload user avatar
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              multipart/form-data:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          imgFile:
+ *                              type: string
+ *                              format: binary
+ *                              required: true
+ *      responses:
+ *          200:
+ *              description: Return result
+ *
  */

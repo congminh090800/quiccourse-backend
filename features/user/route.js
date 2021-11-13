@@ -22,6 +22,13 @@ router.post(
 
 router.get("/user/:id", authenticate, controller.findById);
 
+router.put(
+  "/user",
+  authenticate,
+  validator(requestSchema.updateProfile),
+  controller.updateProfile
+);
+
 module.exports = router;
 
 /**
@@ -174,5 +181,32 @@ module.exports = router;
  *                      {
  *                          "data": "new-token"
  *                      }
+ *
+ */
+
+/**
+ * @swagger
+ * /api/user:
+ *  put:
+ *      tags:
+ *          - user
+ *      summary: Update user profile
+ *      requestBody:
+ *          description: User information
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      example:
+ *                          {
+ *                               "name": "Random name",
+ *                               "phone": "0195698121",
+ *                               "gender": "female",
+ *                               "birthDate": "2018-03-20T09:12:28Z",
+ *                           }
+ *      responses:
+ *          200:
+ *              description: Return user info
  *
  */

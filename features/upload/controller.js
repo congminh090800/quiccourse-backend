@@ -1,4 +1,4 @@
-const { Course } = require("models");
+const { Course, User } = require("models");
 const mongoose = require("mongoose");
 const { uploadFile, getFile } = require("lib/database/s3");
 const fs = require("fs");
@@ -35,6 +35,25 @@ module.exports = {
       res.ok({ imagePath: `/images/${result.Key}` });
     } catch (err) {
       console.log("update cover failed", err);
+      next(err);
+    }
+  },
+  uploadAvatar: async (req, res, next) => {
+    try {
+      const { id } = req.user;
+      const file = req.file;
+      const result = await uploadFile(file);
+
+      await User.updateOne(
+        { _id: mongoose.Types.ObjectId(id), deleted_flag: false },
+        {
+          avatar: result.Key,
+        }
+      );
+      await unlinkFile(file.path);
+      res.ok({ imagePath: `/images/${result.Key}` });
+    } catch (err) {
+      console.log("update avatar failed", err);
       next(err);
     }
   },

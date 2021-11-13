@@ -191,4 +191,20 @@ module.exports = {
       next(err);
     }
   },
+  updateProfile: async (req, res, next) => {
+    try {
+      const { id } = req.user;
+      const existed = await User.findById(id);
+      if (!existed) {
+        return res.badRequest("User does not exist", "Bad Request");
+      }
+      const updated = await User.findByIdAndUpdate(id, req.body, {
+        returnDocument: "after",
+      });
+      return res.ok(updated);
+    } catch (err) {
+      console.log("update profile failed:", err);
+      next(err);
+    }
+  },
 };
