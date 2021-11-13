@@ -196,7 +196,7 @@ module.exports = router;
 
 /**
  * @swagger
- * /api/courses/invite/create/:courseCode:
+ * /api/courses/invite/create/{courseCode}:
  *  patch:
  *      tags:
  *          - course
@@ -214,7 +214,7 @@ module.exports = router;
 
 /**
  * @swagger
- * /api/courses/invite/:courseCode:
+ * /api/courses/invite/{courseCode}:
  *  patch:
  *      tags:
  *         - course
