@@ -87,7 +87,7 @@ module.exports = {
       let options = {
         sort: { createdAt: -1 },
         populate: {
-          path: "owner participants",
+          path: "owner participants teachers",
           select: "-password -accessToken -refreshToken",
         },
         lean: true,
@@ -148,7 +148,7 @@ module.exports = {
       let options = {
         sort: { createdAt: -1 },
         populate: {
-          path: "owner participants",
+          path: "owner participants teachers",
           select: "-password -accessToken -refreshToken",
         },
         lean: true,
@@ -183,15 +183,18 @@ module.exports = {
         );
       }
 
-      const updated = await Course.updateOne(
+      const updated = await Course.findOneAndUpdate(
         { _id: selectedCourse._id, deleted_flag: false },
         {
           $push: {
             participants: id,
           },
+        },
+        {
+          new: true,
         }
       );
-      res.ok(selectedCourse);
+      return res.ok(updated);
     } catch (err) {
       console.log("participate failed", err);
       next(err);
@@ -263,6 +266,41 @@ module.exports = {
       console.log(err);
     }
   },
+  detail: async (req, res, next) => {
+    try {
+      const { code } = req.params;
+      const where = {
+        code: code,
+        deleted_flag: false,
+        $or: [
+          {
+            owner: mongoose.Types.ObjectId(req.user.id),
+          },
+          {
+            participants: mongoose.Types.ObjectId(req.user.id),
+          },
+          {
+            teachers: mongoose.Types.ObjectId(req.user.id),
+          },
+        ],
+      };
+      const removedFields = "-password -accessToken -refreshToken";
+      const course = await Course.findOne(where)
+        .populate("owner", removedFields)
+        .populate("teachers", removedFields)
+        .populate("participants", removedFields);
+      if (!course) {
+        return res.badRequest(
+          "Require course's existence and you are in this class",
+          "Bad request"
+        );
+      }
+      return res.ok(course);
+    } catch (err) {
+      console.log("search courses failed:", err);
+      next(err);
+    }
+  },
   sendInvitationEmail: async (req, res) => {
     const { emails } = req.body;
     const course = req.course;
@@ -289,7 +327,10 @@ module.exports = {
         from: '"HCMUS Course" <course@hcmus.com>', // sender address
         to: emails.join(), // list of receivers
         subject: "Join class invitation ✔", // Subject line
-        html: "<p>Click <a href=" + acceptLink + ">this link</a> to accept join class invitation</p>", // html body
+        html:
+          "<p>Click <a href=" +
+          acceptLink +
+          ">this link</a> to accept join class invitation</p>", // html body
       });
 
       transporter.sendMail(mailOptions, (err) => {

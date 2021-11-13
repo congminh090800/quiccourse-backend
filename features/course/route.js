@@ -40,7 +40,7 @@ router.patch(
   validator(requestSchema.invitation, "params"),
   authenticate,
   controller.createInvitationLink
-)
+);
 
 router.patch(
   "/courses/invite/:courseCode",
@@ -48,6 +48,8 @@ router.patch(
   authenticate,
   controller.participateByLink
 );
+
+router.get("/courses/me/:code", authenticate, controller.detail);
 
 router.post(
   "/courses/invite/email/send",
@@ -311,4 +313,21 @@ module.exports = router;
  *          200:
  *              description: Return "true"
  *
+ */
+
+/**
+ * @swagger
+ * /api/courses/me/{code}:
+ *  get:
+ *      tags:
+ *          - course
+ *      summary: Get course detail
+ *      parameters:
+ *          -   name: code
+ *              in: path
+ *              schema:
+ *                  type: string
+ *      responses:
+ *          200:
+ *              description: Return list with pagination
  */
