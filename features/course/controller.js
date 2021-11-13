@@ -123,6 +123,9 @@ module.exports = {
           {
             participants: mongoose.Types.ObjectId(req.user.id),
           },
+          {
+            teachers: mongoose.Types.ObjectId(req.user.id),
+          },
         ],
       };
 
@@ -168,6 +171,7 @@ module.exports = {
         code: codeRoom,
         deleted_flag: false,
       });
+
       if (!selectedCourse) {
         return res.notFound("Class does not exist", "Class does not exist");
       }
@@ -187,7 +191,6 @@ module.exports = {
           },
         }
       );
-
       res.ok(selectedCourse);
     } catch (err) {
       console.log("participate failed", err);
@@ -214,7 +217,9 @@ module.exports = {
       const currentDate = new Date();
       const expiredDate = new Date().setHours(currentDate.getHours() + 12); //Set expired date to 12 hours later
 
-      await Course.findByIdAndUpdate(course._id, { invitation_expired_date: expiredDate });
+      await Course.findByIdAndUpdate(course._id, {
+        invitation_expired_date: expiredDate,
+      });
 
       return res.ok({ expiredDate });
     } catch (error) {
@@ -234,7 +239,10 @@ module.exports = {
 
       const isExpired = course.invitation_expired_date < Date.now();
       if (isExpired) {
-        return res.forbidden("Invitation key is expired", "EXPIRED_INVITATION_KEY");
+        return res.forbidden(
+          "Invitation key is expired",
+          "EXPIRED_INVITATION_KEY"
+        );
       }
 
       if (course.participants.includes(userId)) {
