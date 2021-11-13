@@ -5,7 +5,7 @@ const validator = require("middlewares/validator.middleware");
 const requestSchema = require("./validator");
 const authenticate = require("middlewares/authenticate.middleware");
 const authorize = require("middlewares/authorize.middleware");
-const rolerAuthorize = require("middlewares/role_authorize.middleware");
+const roleAuthorize = require("middlewares/role_authorize.middleware");
 
 router.post(
   "/courses",
@@ -53,7 +53,7 @@ router.post(
   "/courses/invite/email/send",
   validator(requestSchema.sendInvitation),
   authenticate,
-  rolerAuthorize,
+  roleAuthorize,
   controller.sendInvitationEmail
 );
 

@@ -249,6 +249,11 @@ module.exports = {
   sendInvitationEmail: async (req, res) => {
     const { emails } = req.body;
     const course = req.course;
+    const userId = req.user.id;
+
+    if (!course.owner.equals(userId)) {
+      return res.forbidden("Forbiden", "NO_PERMISSION_USER");
+    }
 
     try {
       const transporter = nodemailer.createTransport({
