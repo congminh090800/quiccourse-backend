@@ -305,7 +305,7 @@ module.exports = {
     const { emails } = req.body;
     const course = req.course;
     const userId = req.user.id;
-    const requestHost = req.get("host");
+    const requestHost = req.get("origin");
 
     if (!course.owner.equals(userId)) {
       return res.forbidden("Forbiden", "NO_PERMISSION_USER");
