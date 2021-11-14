@@ -39,8 +39,8 @@ module.exports = {
         backgroundImg: body.backgroundImg ? body.backgroundImg : "",
         participants: participants
           ? participants.map((participant) =>
-              mongoose.Types.ObjectId(participant)
-            )
+            mongoose.Types.ObjectId(participant)
+          )
           : [],
       });
 
@@ -316,17 +316,15 @@ module.exports = {
 
       const acceptLink = `${requestHost}/courses/paticipate/${course.code}`;
 
-      const mailOptions = await transporter.sendMail({
+      const mailOptions = {
         from: '"HCMUS Course" <course@hcmus.com>', // sender address
         to: emails.join(), // list of receivers
         subject: "Join class invitation ✔", // Subject line
         html:
-          "<p>Click <a href=" +
-          acceptLink +
-          ">this link</a> to accept join class invitation</p>", // html body
-      });
+          `<p>Click <a href="${acceptLink}">this link</a> to accept join class invitation</p>`, // html body
+      };
 
-      transporter.sendMail(mailOptions, (err) => {
+      await transporter.sendMail(mailOptions, (err) => {
         if (err) return res.failure(err.message, err.name);
         res.ok(true);
       });
@@ -362,15 +360,17 @@ module.exports = {
 
           const acceptLink = `${requestHost}/courses/participate/${key}`;
 
-          const mailOptions = await transporter.sendMail({
-            from: "HCMUS Course <hcmus.course@gmail.com>", // sender address
-            to: user.email, // list of receivers
+          const mailOptions = {
+            from: '"HCMUS Course" <course@hcmus.com>', // sender address
+            to: emails.join(), // list of receivers
             subject: "Join class invitation ✔", // Subject line
-            html: `<p>Click <a href="${acceptLink}">this link</a> to accept join class invitation</p>`, // html body
-          });
+            html:
+              `<p>Click <a href="${acceptLink}">this link</a> to accept join class invitation</p>`, // html body
+          };
 
-          transporter.sendMail(mailOptions, (err) => {
+          await transporter.sendMail(mailOptions, (err) => {
             if (err) return res.failure(err.message, err.name);
+            res.ok(true);
           });
         }
       }
