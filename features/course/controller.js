@@ -39,8 +39,8 @@ module.exports = {
         backgroundImg: body.backgroundImg ? body.backgroundImg : "",
         participants: participants
           ? participants.map((participant) =>
-              mongoose.Types.ObjectId(participant)
-            )
+            mongoose.Types.ObjectId(participant)
+          )
           : [],
       });
 
@@ -305,7 +305,7 @@ module.exports = {
     const { emails } = req.body;
     const course = req.course;
     const userId = req.user.id;
-    const requestHost = req.get("host");
+    const requestHost = req.get("origin");
 
     if (!course.owner.equals(userId)) {
       return res.forbidden("Forbiden", "NO_PERMISSION_USER");
@@ -316,17 +316,15 @@ module.exports = {
 
       const acceptLink = `${requestHost}/courses/paticipate/${course.code}`;
 
-      const mailOptions = await transporter.sendMail({
+      const mailOptions = {
         from: '"HCMUS Course" <course@hcmus.com>', // sender address
         to: emails.join(), // list of receivers
         subject: "Join class invitation ✔", // Subject line
         html:
-          "<p>Click <a href=" +
-          acceptLink +
-          ">this link</a> to accept join class invitation</p>", // html body
-      });
+          `<p>Click <a href="${acceptLink}">this link</a> to accept join class invitation</p>`, // html body
+      };
 
-      transporter.sendMail(mailOptions, (err) => {
+      await transporter.sendMail(mailOptions, (err) => {
         if (err) return res.failure(err.message, err.name);
         res.ok(true);
       });
