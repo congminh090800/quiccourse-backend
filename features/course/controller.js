@@ -314,7 +314,7 @@ module.exports = {
     try {
       const transporter = nodemailer.createTransport(config.nodemailerConfig);
 
-      const acceptLink = `${requestHost}/courses/paticipate/${course.code}`;
+      const acceptLink = `${requestHost}/courses/participate/${course.code}`;
 
       const mailOptions = {
         from: '"HCMUS Course" <course@hcmus.com>', // sender address
