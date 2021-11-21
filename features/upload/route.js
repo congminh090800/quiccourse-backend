@@ -12,7 +12,7 @@ var storage = multer.diskStorage({
     cb(null, "static");
   },
   filename: function (req, file, cb) {
-    cb(null, `${Date.now()}_${file.originalname}`); //Appending extension
+    cb(null, `${Date.now()}`); //Appending extension
   },
 });
 const upload = multer({ storage: storage });

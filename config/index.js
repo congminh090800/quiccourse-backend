@@ -14,7 +14,7 @@ const config = {
     name: process.env.DB_NAME,
     s3: {
       name: process.env.AWS_BUCKET_NAME,
-      region: process.env.AWS_BUCKET_REGION,
+      region: process.env.AWS_BUCKET_REGION || "ap-southeast-1",
       accessKey: process.env.AWS_BUCKET_ACCESS_KEY,
       secretKey: process.env.AWS_BUCKET_SECRET_KEY,
     },
@@ -36,7 +36,7 @@ const config = {
   },
   mailtrap: {
     username: process.env.MAILTRAP_USERNAME,
-    password: process.env.MAILTRAP_PASSWORD
+    password: process.env.MAILTRAP_PASSWORD,
   },
   nodemailerConfig: {
     service: process.env.EMAIL_SERVICE,
@@ -47,7 +47,7 @@ const config = {
       user: process.env.EMAIL_USERNAME,
       pass: process.env.EMAIL_PASSWORD,
     },
-  }
+  },
 };
 
 module.exports = config;
