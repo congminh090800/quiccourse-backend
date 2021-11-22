@@ -312,6 +312,13 @@ module.exports = {
     }
 
     try {
+      const currentDate = new Date();
+      const expiredDate = new Date().setHours(currentDate.getHours() + 12); //Set expired date to 12 hours later
+
+      await Course.findByIdAndUpdate(course._id, {
+        invitation_expired_date: expiredDate,
+      });
+
       const transporter = nodemailer.createTransport(config.nodemailerConfig);
 
       const acceptLink = `${requestHost}/courses/participate/${course.code}`;
@@ -348,7 +355,8 @@ module.exports = {
       const transporter = nodemailer.createTransport(config.nodemailerConfig);
       for (let user of users) {
         if (user._id !== requestUserId) {
-          const timestamp = Date.now();
+          const currentDate = new Date();
+          const timestamp = new Date().setHours(currentDate.getHours() + 12);
           const key = `${timestamp}!${course.code}`;
           let invitation = new Invitation({
             userId: user._id,
