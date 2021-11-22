@@ -328,7 +328,7 @@ module.exports = {
         to: emails.join(), // list of receivers
         subject: "Join class invitation ✔", // Subject line
         html:
-          `<p>Click <a href="${acceptLink}">this link</a> to accept join class invitation</p>`, // html body
+          `<p>Click <a href='${acceptLink}'>this link</a> to accept join class invitation</p>`, // html body
       };
 
       await transporter.sendMail(mailOptions, (err) => {
@@ -373,7 +373,7 @@ module.exports = {
             to: emails.join(), // list of receivers
             subject: "Join class invitation ✔", // Subject line
             html:
-              `<p>Click <a href="${acceptLink}">this link</a> to accept join class invitation</p>`, // html body
+              `<p>Click <a href='${acceptLink}'>this link</a> to accept join class invitation</p>`, // html body
           };
 
           await transporter.sendMail(mailOptions, (err) => {
@@ -468,12 +468,21 @@ module.exports = {
         return res.badRequest('You are a teacher in this class', "WRONG_REQUEST");
       }
 
-      const mapping = await Mapping.findOne({ courseId: courseId, studentId: studentId });
+      // if (!course.participants.includes(userId)) {
+      //   return res.forbidden('You are not in this class', "FORBIDEN");
+      // }
+
+      const ObjectId = require('mongoose').Types.ObjectId;
+      const query = { courseId: ObjectId(courseId), studentId: studentId };
+
+      const mapping = await Mapping.findOne(query);
+
+
       const user = await User.findById(userId);
       const owner = await User.findById(course.owner);
       const ownerEmail = owner.email;
 
-      const acceptLink = `${requestHost}/courses/mapping/?courseId=${courseId}&userId=${userId}&studentId=${studentId}`;
+      const acceptLink = `${requestHost}/api/courses/mapping/?courseId=${courseId}&userId=${userId}&studentId=${studentId}`;
 
       let mailOptions = null;
       const transporter = nodemailer.createTransport(config.nodemailerConfig);
@@ -493,7 +502,7 @@ module.exports = {
             `<p>This email is sent to you because student ${user.name} wants to map his account to id '${studentId}' in class ${course.name}</p><br>
             <p>Here is his message: <b>${message}</b></p><br>
             <p>But this id is already mapped to ${mappedUser.name}</p><br>
-            <p>Click <a href="${acceptLink}">this link</a> if you want to accept mapping request</p>`, // html body
+            <p>Click <a href='${acceptLink}'>this link</a> if you want to accept mapping request</p>`, // html body
         };
       } else {
         mailOptions = {
@@ -503,10 +512,10 @@ module.exports = {
           html:
             `<p>This email is sent to you because student ${user.name} wants to map his account to id '${studentId}' in class ${course.name}</p><br>
             <p>Here is his message: <b>${message}</b></p><br>
-            <p>Click <a href="${acceptLink}">this link</a> if you want to accept mapping request</p>`, // html body
+            <p>Click <a href='${acceptLink}'>this link</a> if you want to accept mapping request</p>`, // html body
         };
       }
-      console.log(mailOptions);
+
       await transporter.sendMail(mailOptions, (err) => {
         if (err) return res.failure(err.message, err.name);
         res.ok(true);
@@ -516,4 +525,43 @@ module.exports = {
       res.badRequest(err.message, err.name);
     }
   },
+  acceptMappingRequest: async (req, res) => {
+    const { courseId, userId, studentId } = req.query;
+
+    try {
+      const course = await Course.findById(courseId);
+      if (!course) {
+        return res.badRequest("Class does not exist", "CLASS_NOT_EXISTS");
+      }
+
+      if (course.owner.equals(userId)) {
+        return res.badRequest('You are class owner', "WRONG_REQUEST");
+      }
+
+      if (course.teachers.includes(userId)) {
+        return res.badRequest('You are a teacher in this class', "WRONG_REQUEST");
+      }
+
+      // if (!course.participants.includes(userId)) {
+      //   return res.badRequest('You are not a student in this class', "WRONG_REQUEST");
+      // }
+
+      //remove current mapped user
+      await Mapping.findOneAndDelete({ courseId: courseId, studentId: studentId });
+
+      //add new mapping
+      let mapping = new Mapping({
+        courseId: courseId,
+        userId: userId,
+        studentId: studentId,
+      });
+
+      mapping = await mapping.save();
+
+      res.ok(true);
+    } catch (err) {
+      console.log(err);
+      res.badRequest(err.message, err.name);
+    }
+  }
 };
