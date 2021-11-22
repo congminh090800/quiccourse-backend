@@ -3,4 +3,5 @@ module.exports = {
   User: require("./user"),
   Admin: require("./admin"),
   Invitation: require("./invitation"),
+  Mapping: require("./mapping"),
 };

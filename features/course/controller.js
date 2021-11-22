@@ -1,4 +1,4 @@
-const { Course, User, Invitation } = require("models");
+const { Course, User, Invitation, Mapping } = require("models");
 const { generateRoomCode } = require("lib/regex-helpers");
 const mongoose = require("mongoose");
 const nodemailer = require("nodemailer");
@@ -447,6 +447,73 @@ module.exports = {
       res.ok(true);
     } catch (err) {
       console.log(err);
+    }
+  },
+  sendMappingRequest: async (req, res) => {
+    const { studentId, courseId, message } = req.body;
+    const userId = req.user.id;
+    const requestHost = req.get("host");
+
+    try {
+      const course = await Course.findById(courseId);
+      if (!course) {
+        return res.badRequest("Class does not exist", "CLASS_NOT_EXISTS");
+      }
+
+      if (course.owner.equals(userId)) {
+        return res.badRequest('You are class owner', "WRONG_REQUEST");
+      }
+
+      if (course.teachers.includes(userId)) {
+        return res.badRequest('You are a teacher in this class', "WRONG_REQUEST");
+      }
+
+      const mapping = await Mapping.findOne({ courseId: courseId, studentId: studentId });
+      const user = await User.findById(userId);
+      const owner = await User.findById(course.owner);
+      const ownerEmail = owner.email;
+
+      const acceptLink = `${requestHost}/courses/mapping/?courseId=${courseId}&userId=${userId}&studentId=${studentId}`;
+
+      let mailOptions = null;
+      const transporter = nodemailer.createTransport(config.nodemailerConfig);
+
+      if (mapping) {  //If mapping exists
+        if (mapping.userId.equals(userId)) {
+          return res.badRequest('You are already mapped this studentId', "MAPPING_ALREADY_EXISTS");
+        }
+        //StudentID is mapped by another user
+        const mappedUser = await User.findById(mapping.userId);
+
+        mailOptions = {
+          from: '"HCMUS Course" <course@hcmus.com>', // sender address
+          to: ownerEmail, // list of receivers
+          subject: "Student ID mapping request ✔", // Subject line
+          html:
+            `<p>This email is sent to you because student ${user.name} wants to map his account to id '${studentId}' in class ${course.name}</p><br>
+            <p>Here is his message: <b>${message}</b></p><br>
+            <p>But this id is already mapped to ${mappedUser.name}</p><br>
+            <p>Click <a href="${acceptLink}">this link</a> if you want to accept mapping request</p>`, // html body
+        };
+      } else {
+        mailOptions = {
+          from: '"HCMUS Course" <course@hcmus.com>', // sender address
+          to: ownerEmail, // list of receivers
+          subject: "Student ID mapping request ✔", // Subject line
+          html:
+            `<p>This email is sent to you because student ${user.name} wants to map his account to id '${studentId}' in class ${course.name}</p><br>
+            <p>Here is his message: <b>${message}</b></p><br>
+            <p>Click <a href="${acceptLink}">this link</a> if you want to accept mapping request</p>`, // html body
+        };
+      }
+      console.log(mailOptions);
+      await transporter.sendMail(mailOptions, (err) => {
+        if (err) return res.failure(err.message, err.name);
+        res.ok(true);
+      });
+    } catch (err) {
+      console.log(err);
+      res.badRequest(err.message, err.name);
     }
   },
 };

@@ -74,6 +74,19 @@ router.patch(
   controller.teacherParticipateByLink
 );
 
+router.post(
+  "/courses/mapping/request",
+  validator(requestSchema.mappingRequest, "body"),
+  authenticate,
+  controller.sendMappingRequest
+);
+
+router.get(
+  "/courses/mapping/",
+  validator(requestSchema.acceptMappingRequest, "query"),
+  controller.acceptMappingRequest
+);
+
 module.exports = router;
 
 /**

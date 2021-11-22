@@ -4,4 +4,5 @@ module.exports = {
   sendInvitation: require("./send_invitation"),
   invitation: require('./invitation'),
   teacherInvitation: require('./teacher_invitation'),
+  mappingRequest: require('./mapping_request'),
 };
