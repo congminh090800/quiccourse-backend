@@ -386,11 +386,11 @@ module.exports = router;
  *         - course
  *      summary: Approve mapping request
  *      parameters:
- *         - name: courseId 
+ *         - name: courseId
  *           description: courseId of mapping request
  *           in: query
  *           required: true
- *           schema: 
+ *           schema:
  *              type: string
  *         - name: userId
  *           description: userId of user made the request
@@ -429,10 +429,3 @@ module.exports = router;
  *              description: Return studentId mapped to user
  *
  */
-
-router.get(
-  '/courses/mapping/find/:courseId',
-  validator(requestSchema.findStudentMapping, "params"),
-  authenticate,
-  controller.findStudentMapping
-)
