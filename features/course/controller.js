@@ -497,10 +497,10 @@ module.exports = {
           to: ownerEmail, // list of receivers
           subject: "Student ID mapping request ✔", // Subject line
           html:
-            `<p>This email is sent to you because student ${user.name} wants to map his account to id '${studentId}' in class ${course.name}</p><br>
+            `<p>This email is sent to you because student <b>${user.name}</b> wants to map his account to id <b>${studentId}</b> in class <b>${course.name}</b></p><br>
             <p>Here is his message: <b>${message}</b></p><br>
-            <p>But this id is already mapped to ${mappedUser.name}</p><br>
-            <p>Click <a href='${acceptLink}'>this link</a> if you want to accept mapping request</p>`, // html body
+            <p>But this id is already mapped to <b>${mappedUser.name}</b></p><br>
+            <p>Click <a href="${acceptLink}">this link</a> if you want to accept mapping request</p>`, // html body
         };
       } else {
         mailOptions = {
@@ -508,9 +508,9 @@ module.exports = {
           to: ownerEmail, // list of receivers
           subject: "Student ID mapping request ✔", // Subject line
           html:
-            `<p>This email is sent to you because student ${user.name} wants to map his account to id '${studentId}' in class ${course.name}</p><br>
+            `<p>This email is sent to you because student <b>${user.name}</b> wants to map his account to id <b>${studentId}</b> in class <b>${course.name}</b>/p><br>
             <p>Here is his message: <b>${message}</b></p><br>
-            <p>Click <a href='${acceptLink}'>this link</a> if you want to accept mapping request</p>`, // html body
+            <p>Click <a href="${acceptLink}">this link</a> if you want to accept mapping request</p>`, // html body
         };
       }
 
@@ -540,9 +540,9 @@ module.exports = {
         return res.badRequest('You are a teacher in this class', "WRONG_REQUEST");
       }
 
-      // if (!course.participants.includes(userId)) {
-      //   return res.badRequest('You are not a student in this class', "WRONG_REQUEST");
-      // }
+      if (!course.participants.includes(userId)) {
+        return res.badRequest('You are not a student in this class', "WRONG_REQUEST");
+      }
 
       //remove current mapped user
       await Mapping.findOneAndDelete({ courseId: courseId, studentId: studentId });
