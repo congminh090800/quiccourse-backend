@@ -87,6 +87,13 @@ router.get(
   controller.acceptMappingRequest
 );
 
+router.get(
+  '/courses/mapping/find/:courseId',
+  validator(requestSchema.findStudentMapping, "params"),
+  authenticate,
+  controller.findStudentMapping
+)
+
 module.exports = router;
 
 /**

@@ -475,7 +475,6 @@ module.exports = {
 
       const mapping = await Mapping.findOne(query);
 
-
       const user = await User.findById(userId);
       const owner = await User.findById(course.owner);
       const ownerEmail = owner.email;
@@ -497,9 +496,9 @@ module.exports = {
           to: ownerEmail, // list of receivers
           subject: "Student ID mapping request ✔", // Subject line
           html:
-            `<p>This email is sent to you because student <b>${user.name}</b> wants to map his account to id <b>${studentId}</b> in class <b>${course.name}</b></p><br>
-            <p>Here is his message: <b>${message}</b></p><br>
-            <p>But this id is already mapped to <b>${mappedUser.name}</b></p><br>
+            `<p>This email is sent to you because student <b>${user.name}</b> wants to map his account to id <b>${studentId}</b> in class <b>${course.name}</b></p><br>`
+              + message ? `<p>Here is his message: <b>${message}</b></p><br>` : '' +
+            `<p>But this id is already mapped to <b>${mappedUser.name}</b></p><br>
             <p>Click <a href="${acceptLink}">this link</a> if you want to accept mapping request</p>`, // html body
         };
       } else {
@@ -508,9 +507,9 @@ module.exports = {
           to: ownerEmail, // list of receivers
           subject: "Student ID mapping request ✔", // Subject line
           html:
-            `<p>This email is sent to you because student <b>${user.name}</b> wants to map his account to id <b>${studentId}</b> in class <b>${course.name}</b>/p><br>
-            <p>Here is his message: <b>${message}</b></p><br>
-            <p>Click <a href="${acceptLink}">this link</a> if you want to accept mapping request</p>`, // html body
+            `<p>This email is sent to you because student <b>${user.name}</b> wants to map his account to id <b>${studentId}</b> in class <b>${course.name}</b>/p><br>`
+              + message ? `<p>Here is his message: <b>${message}</b></p><br>` : '' +
+            `<p>Click <a href="${acceptLink}">this link</a> if you want to accept mapping request</p>`, // html body
         };
       }
 
@@ -560,6 +559,17 @@ module.exports = {
     } catch (err) {
       console.log(err);
       res.badRequest(err.message, err.name);
+    }
+  },
+  findStudentMapping: async (req, res) => {
+    const { courseId } = req.params;
+    const userId = req.user.id;
+
+    const mapping = await Mapping.findOne({ courseId: courseId, userId: userId });
+    if (mapping) {
+      return res.ok(mapping.studentId);
+    } else {
+      return res.notFound('You are not mapped to any student ID', "NOT_FOUND");
     }
   }
 };
