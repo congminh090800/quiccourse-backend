@@ -183,6 +183,13 @@ module.exports = {
         );
       }
 
+      if (selectedCourse.owner.equals(id)) {
+        return res.badRequest(
+          "You are owner of this class",
+          "YOU_ARE_OWNER"
+        );
+      }
+
       const updated = await Course.findOneAndUpdate(
         { _id: selectedCourse._id, deleted_flag: false },
         {
@@ -252,6 +259,13 @@ module.exports = {
         return res.badRequest(
           "User are already in the class",
           "User are already in the class"
+        );
+      }
+
+      if (course.owner.equals(requestUserId)) {
+        return res.badRequest(
+          "You are owner of this class",
+          "YOU_ARE_OWNER"
         );
       }
 
@@ -434,6 +448,13 @@ module.exports = {
         return res.badRequest(
           "User is already a teacher in the class",
           "USER_ALREADY_IN_CLASS"
+        );
+      }
+
+      if (course.owner.equals(requestUserId)) {
+        return res.badRequest(
+          "You are owner of this class",
+          "YOU_ARE_OWNER"
         );
       }
 
