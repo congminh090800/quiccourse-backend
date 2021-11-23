@@ -247,13 +247,13 @@ module.exports = {
         return res.notFound("Invitation key invalid", "INVALID_INVITAION_KEY");
       }
 
-      const isExpired = course.invitation_expired_date < Date.now();
-      if (isExpired) {
-        return res.forbidden(
-          "Invitation key is expired",
-          "EXPIRED_INVITATION_KEY"
-        );
-      }
+      // const isExpired = course.invitation_expired_date < Date.now();
+      // if (isExpired) {
+      //   return res.forbidden(
+      //     "Invitation key is expired",
+      //     "EXPIRED_INVITATION_KEY"
+      //   );
+      // }
 
       if (course.participants.includes(userId)) {
         return res.badRequest(
@@ -405,12 +405,12 @@ module.exports = {
     const extractedKey = key.split("!");
     const timestamp = extractedKey[0];
 
-    if (new Date(timestamp) < Date.now()) {
-      return res.forbidden(
-        "Invitation key is expired",
-        "EXPIRED_INVITATION_KEY"
-      );
-    }
+    // if (new Date(timestamp) < Date.now()) {
+    //   return res.forbidden(
+    //     "Invitation key is expired",
+    //     "EXPIRED_INVITATION_KEY"
+    //   );
+    // }
 
     try {
       const invitation = await Invitation.findOne({ key: key });
