@@ -262,7 +262,7 @@ module.exports = {
         );
       }
 
-      if (course.owner.equals(requestUserId)) {
+      if (course.owner.equals(userId)) {
         return res.badRequest(
           "You are owner of this class",
           "YOU_ARE_OWNER"
