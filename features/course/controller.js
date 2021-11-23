@@ -327,8 +327,7 @@ module.exports = {
         from: '"HCMUS Course" <course@hcmus.com>', // sender address
         to: emails.join(), // list of receivers
         subject: "Join class invitation ✔", // Subject line
-        html:
-          `<p>Click <a href='${acceptLink}'>this link</a> to accept join class invitation</p>`, // html body
+        html: `<p>Click <a href="${acceptLink}">this link</a> to accept join class invitation</p>`, // html body
       };
 
       await transporter.sendMail(mailOptions, (err) => {
@@ -366,14 +365,13 @@ module.exports = {
 
           invitation = await invitation.save();
 
-          const acceptLink = `${requestHost}/courses/participate/${key}`;
+          const acceptLink = `${requestHost}/courses/teacher/${key}`;
 
           const mailOptions = {
             from: '"HCMUS Course" <course@hcmus.com>', // sender address
             to: emails.join(), // list of receivers
             subject: "Join class invitation ✔", // Subject line
-            html:
-              `<p>Click <a href='${acceptLink}'>this link</a> to accept join class invitation</p>`, // html body
+            html: `<p>Click <a href="${acceptLink}">this link</a> to accept join class invitation</p>`, // html body
           };
 
           await transporter.sendMail(mailOptions, (err) => {
