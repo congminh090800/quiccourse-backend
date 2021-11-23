@@ -466,9 +466,9 @@ module.exports = {
         return res.badRequest('You are a teacher in this class', "WRONG_REQUEST");
       }
 
-      // if (!course.participants.includes(userId)) {
-      //   return res.forbidden('You are not in this class', "FORBIDEN");
-      // }
+      if (!course.participants.includes(userId)) {
+        return res.forbidden('You are not in this class', "FORBIDEN");
+      }
 
       const ObjectId = require('mongoose').Types.ObjectId;
       const query = { courseId: ObjectId(courseId), studentId: studentId };
