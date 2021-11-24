@@ -39,8 +39,8 @@ module.exports = {
         backgroundImg: body.backgroundImg ? body.backgroundImg : "",
         participants: participants
           ? participants.map((participant) =>
-            mongoose.Types.ObjectId(participant)
-          )
+              mongoose.Types.ObjectId(participant)
+            )
           : [],
       });
 
@@ -184,10 +184,7 @@ module.exports = {
       }
 
       if (selectedCourse.owner.equals(id)) {
-        return res.badRequest(
-          "You are owner of this class",
-          "YOU_ARE_OWNER"
-        );
+        return res.badRequest("You are owner of this class", "YOU_ARE_OWNER");
       }
 
       const updated = await Course.findOneAndUpdate(
@@ -263,10 +260,7 @@ module.exports = {
       }
 
       if (course.owner.equals(userId)) {
-        return res.badRequest(
-          "You are owner of this class",
-          "YOU_ARE_OWNER"
-        );
+        return res.badRequest("You are owner of this class", "YOU_ARE_OWNER");
       }
 
       course.participants.push(userId);
@@ -278,6 +272,7 @@ module.exports = {
       res.ok(true);
     } catch (err) {
       console.log(err);
+      next(err);
     }
   },
   detail: async (req, res, next) => {
@@ -350,6 +345,7 @@ module.exports = {
       });
     } catch (err) {
       console.log(err);
+      next(err);
     }
   },
   sendTeachersInvitationEmail: async (req, res) => {
@@ -397,6 +393,7 @@ module.exports = {
       res.ok(true);
     } catch (err) {
       console.log(err);
+      next(err);
     }
   },
   teacherParticipateByLink: async (req, res) => {
@@ -452,10 +449,7 @@ module.exports = {
       }
 
       if (course.owner.equals(requestUserId)) {
-        return res.badRequest(
-          "You are owner of this class",
-          "YOU_ARE_OWNER"
-        );
+        return res.badRequest("You are owner of this class", "YOU_ARE_OWNER");
       }
 
       await Course.findByIdAndUpdate(course.id, {
@@ -466,6 +460,7 @@ module.exports = {
       res.ok(true);
     } catch (err) {
       console.log(err);
+      next(err);
     }
   },
   sendMappingRequest: async (req, res) => {
@@ -480,18 +475,21 @@ module.exports = {
       }
 
       if (course.owner.equals(userId)) {
-        return res.badRequest('You are class owner', "WRONG_REQUEST");
+        return res.badRequest("You are class owner", "WRONG_REQUEST");
       }
 
       if (course.teachers.includes(userId)) {
-        return res.badRequest('You are a teacher in this class', "WRONG_REQUEST");
+        return res.badRequest(
+          "You are a teacher in this class",
+          "WRONG_REQUEST"
+        );
       }
 
       if (!course.participants.includes(userId)) {
-        return res.forbidden('You are not in this class', "FORBIDEN");
+        return res.forbidden("You are not in this class", "FORBIDEN");
       }
 
-      const ObjectId = require('mongoose').Types.ObjectId;
+      const ObjectId = require("mongoose").Types.ObjectId;
       const query = { courseId: ObjectId(courseId), studentId: studentId };
 
       const mapping = await Mapping.findOne(query);
@@ -505,9 +503,13 @@ module.exports = {
       let mailOptions = null;
       const transporter = nodemailer.createTransport(config.nodemailerConfig);
 
-      if (mapping) {  //If mapping exists
+      if (mapping) {
+        //If mapping exists
         if (mapping.userId.equals(userId)) {
-          return res.badRequest('You are already mapped this studentId', "MAPPING_ALREADY_EXISTS");
+          return res.badRequest(
+            "You are already mapped this studentId",
+            "MAPPING_ALREADY_EXISTS"
+          );
         }
         //StudentID is mapped by another user
         const mappedUser = await User.findById(mapping.userId);
@@ -517,8 +519,10 @@ module.exports = {
           to: ownerEmail, // list of receivers
           subject: "Student ID mapping request ✔", // Subject line
           html:
-            `<p>This email is sent to you because student <b>${user.name}</b> wants to map his account to id <b>${studentId}</b> in class <b>${course.name}</b></p><br>`
-            + (message ? `<p>Here is his message: <b>${message}</b></p><br>` : '') +
+            `<p>This email is sent to you because student <b>${user.name}</b> wants to map his account to id <b>${studentId}</b> in class <b>${course.name}</b></p><br>` +
+            (message
+              ? `<p>Here is his message: <b>${message}</b></p><br>`
+              : "") +
             `<p>But this id is already mapped to <b>${mappedUser.name}</b></p><br>
             <p>Click <a href="${acceptLink}">this link</a> if you want to accept mapping request</p>`, // html body
         };
@@ -528,8 +532,10 @@ module.exports = {
           to: ownerEmail, // list of receivers
           subject: "Student ID mapping request ✔", // Subject line
           html:
-            `<p>This email is sent to you because student <b>${user.name}</b> wants to map his account to id <b>${studentId}</b> in class <b>${course.name}</b></p><br>`
-            + (message ? `<p>Here is his message: <b>${message}</b></p><br>` : '') +
+            `<p>This email is sent to you because student <b>${user.name}</b> wants to map his account to id <b>${studentId}</b> in class <b>${course.name}</b></p><br>` +
+            (message
+              ? `<p>Here is his message: <b>${message}</b></p><br>`
+              : "") +
             `<p>Click <a href="${acceptLink}">this link</a> if you want to accept mapping request</p>`, // html body
         };
       }
@@ -553,19 +559,28 @@ module.exports = {
       }
 
       if (course.owner.equals(userId)) {
-        return res.badRequest('You are class owner', "WRONG_REQUEST");
+        return res.badRequest("You are class owner", "WRONG_REQUEST");
       }
 
       if (course.teachers.includes(userId)) {
-        return res.badRequest('You are a teacher in this class', "WRONG_REQUEST");
+        return res.badRequest(
+          "You are a teacher in this class",
+          "WRONG_REQUEST"
+        );
       }
 
       if (!course.participants.includes(userId)) {
-        return res.badRequest('You are not a student in this class', "WRONG_REQUEST");
+        return res.badRequest(
+          "You are not a student in this class",
+          "WRONG_REQUEST"
+        );
       }
 
       //remove current mapped user
-      await Mapping.findOneAndDelete({ courseId: courseId, studentId: studentId });
+      await Mapping.findOneAndDelete({
+        courseId: courseId,
+        studentId: studentId,
+      });
 
       //add new mapping
       let mapping = new Mapping({
@@ -586,11 +601,14 @@ module.exports = {
     const { courseId } = req.params;
     const userId = req.user.id;
 
-    const mapping = await Mapping.findOne({ courseId: courseId, userId: userId });
+    const mapping = await Mapping.findOne({
+      courseId: courseId,
+      userId: userId,
+    });
     if (mapping) {
       return res.ok(mapping.studentId);
     } else {
-      return res.notFound('You are not mapped to any student ID', "NOT_FOUND");
+      return res.notFound("You are not mapped to any student ID", "NOT_FOUND");
     }
-  }
+  },
 };

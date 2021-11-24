@@ -32,7 +32,7 @@ module.exports = {
         }
       );
       await unlinkFile(file.path);
-      res.ok({ imagePath: `/images/${result.Key}` });
+      return res.ok({ imagePath: `/images/${result.Key}` });
     } catch (err) {
       console.log("update cover failed", err);
       next(err);
@@ -51,7 +51,7 @@ module.exports = {
         }
       );
       await unlinkFile(file.path);
-      res.ok({ imagePath: `/images/${result.Key}` });
+      return res.ok({ imagePath: `/images/${result.Key}` });
     } catch (err) {
       console.log("update avatar failed", err);
       next(err);
@@ -62,8 +62,11 @@ module.exports = {
       const key = req.params.key;
       res.set("Content-Type", "image/*");
       res.set("Content-Disposition", `attachment; filename = ${key}`);
-      const readStream = getFile(key);
-      readStream.pipe(res);
+      getFile(key)
+        .on("error", (error) => {
+          return res.notFound("Image not found", "IMAGE_NOT_FOUND");
+        })
+        .pipe(res);
     } catch (err) {
       console.log("get image failed", err);
       next(err);
