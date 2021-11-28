@@ -220,7 +220,7 @@ module.exports = {
       const user = await User.findById(userId);
 
       if (user.studentId != null) {
-        return req.badRequest('Your account already has Student ID', 'Bad Request');
+        return res.badRequest('Your account already has Student ID', 'Bad Request');
       }
 
       user.studentId = studentId;
