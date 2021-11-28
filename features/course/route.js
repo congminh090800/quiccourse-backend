@@ -74,26 +74,6 @@ router.patch(
   controller.teacherParticipateByLink
 );
 
-router.post(
-  "/courses/mapping/request",
-  validator(requestSchema.mappingRequest, "body"),
-  authenticate,
-  controller.sendMappingRequest
-);
-
-router.get(
-  "/courses/mapping/",
-  validator(requestSchema.acceptMappingRequest, "query"),
-  controller.acceptMappingRequest
-);
-
-router.get(
-  '/courses/mapping/find/:courseId',
-  validator(requestSchema.findStudentMapping, "params"),
-  authenticate,
-  controller.findStudentMapping
-)
-
 module.exports = router;
 
 /**
@@ -350,82 +330,4 @@ module.exports = router;
  *      responses:
  *          200:
  *              description: Return list with pagination
- */
-
-/**
- * @swagger
- * /api/courses/mapping/request:
- *  post:
- *      tags:
- *         - course
- *      summary: Send mapping resquest to course owner
- *      requestBody:
- *          description: CourseId, StudentId and message (sent to course owner)
- *          required: true
- *          content:
- *              application/json:
- *                  schema:
- *                      type: object
- *                      example:
- *                           {
- *                               "courseId": "619bd01d196f6b40933acb7b",
- *                               "studentId": "18120480",
- *                               "message": "I want to map with this student id"
- *                           }
- *      responses:
- *          200:
- *              description: Return "true"
- *
- */
-
-/**
- * @swagger
- * /api/courses/mapping/:
- *  get:
- *      tags:
- *         - course
- *      summary: Approve mapping request
- *      parameters:
- *         - name: courseId
- *           description: courseId of mapping request
- *           in: query
- *           required: true
- *           schema:
- *              type: string
- *         - name: userId
- *           description: userId of user made the request
- *           in: query
- *           required: true
- *           schema:
- *              type: string
- *         - name: studentId
- *           description: studentId user want to map
- *           in: query
- *           required: true
- *           schema:
- *              type: string
- *      responses:
- *          200:
- *              description: Return "true"
- *
- */
-
-/**
- * @swagger
- * /api/courses/mapping/find/{courseId}:
- *  post:
- *      tags:
- *         - course
- *      summary: Find studentId mapped to user
- *      parameters:
- *         -  name: courseId
- *            in: path
- *            required: true
- *            description: courseId of course user want to find
- *            schema:
- *                type: string
- *      responses:
- *          200:
- *              description: Return studentId mapped to user
- *
  */

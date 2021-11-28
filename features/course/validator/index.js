@@ -3,8 +3,5 @@ module.exports = {
   search: require("./search"),
   sendInvitation: require("./send_invitation"),
   invitation: require('./invitation'),
-  teacherInvitation: require('./teacher_invitation'),
-  mappingRequest: require('./mapping_request'),
-  acceptMappingRequest: require('./accept_mapping_request'),
-  findStudentMapping: require('./find_student_mapping'),
+  teacherInvitation: require('./teacher_invitation')
 };

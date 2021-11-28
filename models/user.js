@@ -50,6 +50,9 @@ const userSchema = new Schema(
     googleId: {
       type: String,
     },
+    studentId: {
+      type: String,
+    },
     deleted_flag: { type: Boolean, default: false },
   },
   { timestamps: true }
