@@ -31,9 +31,9 @@ router.put(
 
 router.patch(
   "/user/student-id",
-  validator(requestSchema.updateStudentId, "body"),
+  validator(requestSchema.setStudentId, "body"),
   authenticate,
-  controller.updateStudentId
+  controller.setStudentId
 );
 
 module.exports = router;
@@ -220,11 +220,11 @@ module.exports = router;
 
 /**
  * @swagger
- * /api/user/mapping/request:
- *  post:
+ * /api/user/student-id:
+ *  patch:
  *      tags:
- *         - course
- *      summary: Update Student ID
+ *         - user
+ *      summary: Set Student ID
  *      requestBody:
  *          description: Student ID want to map
  *          required: true

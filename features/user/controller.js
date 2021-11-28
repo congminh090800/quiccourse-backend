@@ -207,7 +207,7 @@ module.exports = {
       next(err);
     }
   },
-  updateStudentId: async (req, res) => {
+  setStudentId: async (req, res) => {
     const { studentId } = req.body;
     const userId = req.user.id;
 
@@ -218,6 +218,10 @@ module.exports = {
       }
 
       const user = await User.findById(userId);
+
+      if (user.studentId != null) {
+        return req.badRequest('Your account already has Student ID', 'Bad Request');
+      }
 
       user.studentId = studentId;
       await user.save();
