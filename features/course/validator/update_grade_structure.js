@@ -3,8 +3,8 @@ const Joi = require("joi");
 const schema = Joi.object().keys({
     courseId: Joi.string().required(),
     gradeStructure: Joi.array().items(Joi.object({
-        gradeName: Joi.string().required(),
-        gradePoint: Joi.number().required(),
+        name: Joi.string().required(),
+        point: Joi.number().required(),
     })).required()
 });
 
