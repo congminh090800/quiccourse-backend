@@ -473,7 +473,7 @@ module.exports = {
         return res.notFound("Class does not exist", "CLASS_NOT_EXISTS");
       }
 
-      if (!course.owner.equals(userId) || !course.teachers.includes(userId)) {
+      if (!course.owner.equals(userId) && !course.teachers.includes(userId)) {
         return res.forbidden("Forbiden", "NO_PERMISSION_USER");
       }
 
