@@ -74,6 +74,13 @@ router.patch(
   controller.teacherParticipateByLink
 );
 
+router.patch(
+  '/course/grade',
+  validator(requestSchema.updateGradeStructure, "body"),
+  authenticate,
+  controller.updateGradeStructure
+);
+
 module.exports = router;
 
 /**

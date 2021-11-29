@@ -463,4 +463,33 @@ module.exports = {
       next(err);
     }
   },
+  updateGradeStructure: async (req, res) => {
+    const userId = req.user.id;
+    const { courseId, gradeStructure } = req.body;
+
+    try {
+      const course = await Course.findById(courseId);
+      if (!course) {
+        return res.notFound("Class does not exist", "CLASS_NOT_EXISTS");
+      }
+
+      if (!course.owner.equals(userId) || !course.teachers.includes(userId)) {
+        return res.forbidden("Forbiden", "NO_PERMISSION_USER");
+      }
+
+      for (i = 0; i < gradeStructure.length; i++) {
+        const grade = gradeStructure[i];
+        grade.index = i;
+      }
+
+      await Course.findByIdAndUpdate(courseId, {
+        gradeStructure: gradeStructure,
+      });
+
+      res.ok(true);
+    } catch (err) {
+      console.log(err);
+      next(err);
+    }
+  }
 };

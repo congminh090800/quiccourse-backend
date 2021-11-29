@@ -3,5 +3,6 @@ module.exports = {
   search: require("./search"),
   sendInvitation: require("./send_invitation"),
   invitation: require('./invitation'),
-  teacherInvitation: require('./teacher_invitation')
+  teacherInvitation: require('./teacher_invitation'),
+  updateGradeStructure: require('./update_grade_structure'),
 };
