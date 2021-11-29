@@ -61,8 +61,8 @@ const courseSchema = new Schema(
       type: [
         {
           type: {
-            gradeName: String,
-            gradePoint: Number,
+            name: String,
+            point: Number,
             index: Number,
           }
         }

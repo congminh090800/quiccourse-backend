@@ -338,3 +338,33 @@ module.exports = router;
  *          200:
  *              description: Return list with pagination
  */
+
+/**
+ * @swagger
+ * /api/course/grade:
+ *  post:
+ *      tags:
+ *         - course
+ *      summary: Create/update course grade structure
+ *      requestBody:
+ *          description: courseId and grade structure
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      example:
+ *                           {
+ *                               "courseId" : "618ea2aa952e5bdf038a8e5c",
+ *                               "gradeStructure" : [
+ *                                  {
+ *                                     "name": "Excercises",
+ *                                     "point": 10
+ *                                  }
+ *                               ]
+ *                           }
+ *      responses:
+ *          200:
+ *              description: Return "true"
+ *
+ */
