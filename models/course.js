@@ -57,6 +57,17 @@ const courseSchema = new Schema(
       default: [],
     },
     invitation_expired_date: { type: Number, default: 0 },
+    gradeStructure: {
+      type: [
+        {
+          type: {
+            gradeName: String,
+            gradePoint: Number,
+            index: Number,
+          }
+        }
+      ]
+    },
     deleted_flag: { type: Boolean, default: false },
   },
   { timestamps: true }
