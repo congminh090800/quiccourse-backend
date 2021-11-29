@@ -75,7 +75,7 @@ router.patch(
 );
 
 router.patch(
-  '/course/grade',
+  '/courses/grade',
   validator(requestSchema.updateGradeStructure, "body"),
   authenticate,
   controller.updateGradeStructure
@@ -341,8 +341,8 @@ module.exports = router;
 
 /**
  * @swagger
- * /api/course/grade:
- *  post:
+ * /api/courses/grade:
+ *  patch:
  *      tags:
  *         - course
  *      summary: Create/update course grade structure
