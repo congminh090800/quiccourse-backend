@@ -207,4 +207,29 @@ module.exports = {
       next(err);
     }
   },
+  setStudentId: async (req, res) => {
+    const { studentId } = req.body;
+    const userId = req.user.id;
+
+    try {
+      const existed = await User.findOne({ studentId: studentId });
+      if (existed) {
+        return res.badRequest("This Student ID is mapped to another user", "Bad Request");
+      }
+
+      const user = await User.findById(userId);
+
+      if (user.studentId != null) {
+        return res.badRequest('Your account already has Student ID', 'Bad Request');
+      }
+
+      user.studentId = studentId;
+      await user.save();
+
+      res.ok(true);
+    } catch (err) {
+      console.log(err);
+      next(err);
+    }
+  },
 };

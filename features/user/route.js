@@ -29,6 +29,13 @@ router.put(
   controller.updateProfile
 );
 
+router.patch(
+  "/user/student-id",
+  validator(requestSchema.setStudentId, "body"),
+  authenticate,
+  controller.setStudentId
+);
+
 module.exports = router;
 
 /**
@@ -208,5 +215,29 @@ module.exports = router;
  *      responses:
  *          200:
  *              description: Return user info
+ *
+ */
+
+/**
+ * @swagger
+ * /api/user/student-id:
+ *  patch:
+ *      tags:
+ *         - user
+ *      summary: Set Student ID
+ *      requestBody:
+ *          description: Student ID want to map
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      example:
+ *                           {
+ *                               "studentId": "18120480"
+ *                           }
+ *      responses:
+ *          200:
+ *              description: Return "true"
  *
  */

@@ -4,7 +4,8 @@ module.exports = {
   sendInvitation: require("./send_invitation"),
   invitation: require('./invitation'),
   teacherInvitation: require('./teacher_invitation'),
-  mappingRequest: require('./mapping_request'),
-  acceptMappingRequest: require('./accept_mapping_request'),
-  findStudentMapping: require('./find_student_mapping'),
+  setGradeStructure: require('./set_grade_structure'),
+  deleteGrade: require('./delete_grade'),
+  insertGrade: require('./insert_grade'),
+  editGrade: require('./edit_grade'),
 };

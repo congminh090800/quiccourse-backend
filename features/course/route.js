@@ -75,23 +75,31 @@ router.patch(
 );
 
 router.post(
-  "/courses/mapping/request",
-  validator(requestSchema.mappingRequest, "body"),
+  '/courses/grade',
+  validator(requestSchema.setGradeStructure, "body"),
   authenticate,
-  controller.sendMappingRequest
+  controller.setGradeStructure
 );
 
-router.get(
-  "/courses/mapping/",
-  validator(requestSchema.acceptMappingRequest, "query"),
-  controller.acceptMappingRequest
+router.delete(
+  '/courses/grade',
+  validator(requestSchema.deleteGrade, "body"),
+  authenticate,
+  controller.deleteGrade
 );
 
-router.get(
-  '/courses/mapping/find/:courseId',
-  validator(requestSchema.findStudentMapping, "params"),
+router.put(
+  '/courses/grade',
+  validator(requestSchema.insertGrade, "body"),
   authenticate,
-  controller.findStudentMapping
+  controller.insertGrade
+);
+
+router.patch(
+  '/courses/grade',
+  validator(requestSchema.editGrade, "body"),
+  authenticate,
+  controller.editGrade
 )
 
 module.exports = router;
@@ -354,13 +362,13 @@ module.exports = router;
 
 /**
  * @swagger
- * /api/courses/mapping/request:
+ * /api/courses/grade:
  *  post:
  *      tags:
  *         - course
- *      summary: Send mapping resquest to course owner
+ *      summary: Create/replace course grade structure
  *      requestBody:
- *          description: CourseId, StudentId and message (sent to course owner)
+ *          description: courseId and grade structure
  *          required: true
  *          content:
  *              application/json:
@@ -368,64 +376,94 @@ module.exports = router;
  *                      type: object
  *                      example:
  *                           {
- *                               "courseId": "619bd01d196f6b40933acb7b",
- *                               "studentId": "18120480",
- *                               "message": "I want to map with this student id"
+ *                               "courseId" : "618ea2aa952e5bdf038a8e5c",
+ *                               "gradeStructure" : [
+ *                                  {
+ *                                     "name": "Excercises",
+ *                                     "point": 10
+ *                                  }
+ *                               ]
  *                           }
  *      responses:
  *          200:
- *              description: Return "true"
+ *              description: Return course grade structure
  *
  */
 
 /**
  * @swagger
- * /api/courses/mapping/:
- *  get:
+ * /api/courses/grade:
+ *  delete:
  *      tags:
  *         - course
- *      summary: Approve mapping request
- *      parameters:
- *         - name: courseId
- *           description: courseId of mapping request
- *           in: query
- *           required: true
- *           schema:
- *              type: string
- *         - name: userId
- *           description: userId of user made the request
- *           in: query
- *           required: true
- *           schema:
- *              type: string
- *         - name: studentId
- *           description: studentId user want to map
- *           in: query
- *           required: true
- *           schema:
- *              type: string
+ *      summary: Delete course grade by gradeId
+ *      requestBody:
+ *          description: courseId and gradeId
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      example:
+ *                           {
+ *                               "courseId" : "618d5c2ffad65ae1fd321a88",
+ *                               "gradeId" : "61a5dbf7050bb78aac0f6c64"
+ *                           }
  *      responses:
  *          200:
- *              description: Return "true"
+ *              description: Return new course grade structure
  *
  */
 
 /**
  * @swagger
- * /api/courses/mapping/find/{courseId}:
- *  post:
+ * /api/courses/grade:
+ *  put:
  *      tags:
  *         - course
- *      summary: Find studentId mapped to user
- *      parameters:
- *         -  name: courseId
- *            in: path
- *            required: true
- *            description: courseId of course user want to find
- *            schema:
- *                type: string
+ *      summary: Insert new grade to course grade structure
+ *      requestBody:
+ *          description: courseId, name and point
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      example:
+ *                           {
+ *                               "courseId" : "618d5c2ffad65ae1fd321a88",
+ *                               "name" : "Bonus",
+ *                               "point" : 10
+ *                           }
  *      responses:
  *          200:
- *              description: Return studentId mapped to user
+ *              description: Return new course grade structure
+ *
+ */
+
+/**
+ * @swagger
+ * /api/courses/grade:
+ *  patch:
+ *      tags:
+ *         - course
+ *      summary: Edit grade in course grade structure
+ *      requestBody:
+ *          description: courseId, gradeId and new name, point
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      example:
+ *                           {
+ *                               "courseId" : "618d5c2ffad65ae1fd321a88",
+ *                               "gradeId" : "61a5dc08050bb78aac0f6c6a",
+ *                               "name" : "Mid-project",
+ *                               "point" : 30
+ *                           }
+ *      responses:
+ *          200:
+ *              description: Return new course grade structure
  *
  */

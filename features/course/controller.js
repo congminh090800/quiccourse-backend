@@ -39,8 +39,8 @@ module.exports = {
         backgroundImg: body.backgroundImg ? body.backgroundImg : "",
         participants: participants
           ? participants.map((participant) =>
-              mongoose.Types.ObjectId(participant)
-            )
+            mongoose.Types.ObjectId(participant)
+          )
           : [],
       });
 
@@ -463,152 +463,131 @@ module.exports = {
       next(err);
     }
   },
-  sendMappingRequest: async (req, res) => {
-    const { studentId, courseId, message } = req.body;
+  setGradeStructure: async (req, res, next) => {
     const userId = req.user.id;
-    const requestHost = req.get("host");
+    const { courseId, gradeStructure } = req.body;
 
     try {
       const course = await Course.findById(courseId);
       if (!course) {
-        return res.badRequest("Class does not exist", "CLASS_NOT_EXISTS");
+        return res.notFound("Class does not exist", "CLASS_NOT_EXISTS");
       }
 
-      if (course.owner.equals(userId)) {
-        return res.badRequest("You are class owner", "WRONG_REQUEST");
+      if (!course.owner.equals(userId) && !course.teachers.includes(userId)) {
+        return res.forbidden("Forbiden", "NO_PERMISSION_USER");
       }
 
-      if (course.teachers.includes(userId)) {
-        return res.badRequest(
-          "You are a teacher in this class",
-          "WRONG_REQUEST"
-        );
+      for (i = 0; i < gradeStructure.length; i++) {
+        const grade = gradeStructure[i];
+        grade.index = i;
       }
 
-      if (!course.participants.includes(userId)) {
-        return res.forbidden("You are not in this class", "FORBIDEN");
+      const updatedCourse = await Course.findByIdAndUpdate(courseId, {
+        gradeStructure: gradeStructure,
+      }, { new: true, upsert: true });
+
+      res.ok(updatedCourse.gradeStructure);
+    } catch (err) {
+      console.log(err);
+      next(err);
+    }
+  },
+  deleteGrade: async (req, res, next) => {
+    const userId = req.user.id;
+    const { courseId, gradeId } = req.body;
+
+    try {
+      const course = await Course.findById(courseId);
+      if (!course) {
+        return res.notFound("Class does not exist", "CLASS_NOT_EXISTS");
       }
 
-      const ObjectId = require("mongoose").Types.ObjectId;
-      const query = { courseId: ObjectId(courseId), studentId: studentId };
+      if (!course.owner.equals(userId) && !course.teachers.includes(userId)) {
+        return res.forbidden("Forbiden", "NO_PERMISSION_USER");
+      }
 
-      const mapping = await Mapping.findOne(query);
-
-      const user = await User.findById(userId);
-      const owner = await User.findById(course.owner);
-      const ownerEmail = owner.email;
-
-      const acceptLink = `${requestHost}/api/courses/mapping/?courseId=${courseId}&userId=${userId}&studentId=${studentId}`;
-
-      let mailOptions = null;
-      const transporter = nodemailer.createTransport(config.nodemailerConfig);
-
-      if (mapping) {
-        //If mapping exists
-        if (mapping.userId.equals(userId)) {
-          return res.badRequest(
-            "You are already mapped this studentId",
-            "MAPPING_ALREADY_EXISTS"
-          );
-        }
-        //StudentID is mapped by another user
-        const mappedUser = await User.findById(mapping.userId);
-
-        mailOptions = {
-          from: '"HCMUS Course" <course@hcmus.com>', // sender address
-          to: ownerEmail, // list of receivers
-          subject: "Student ID mapping request ✔", // Subject line
-          html:
-            `<p>This email is sent to you because student <b>${user.name}</b> wants to map his account to id <b>${studentId}</b> in class <b>${course.name}</b></p><br>` +
-            (message
-              ? `<p>Here is his message: <b>${message}</b></p><br>`
-              : "") +
-            `<p>But this id is already mapped to <b>${mappedUser.name}</b></p><br>
-            <p>Click <a href="${acceptLink}">this link</a> if you want to accept mapping request</p>`, // html body
-        };
+      const gradeStructure = course.gradeStructure;
+      const index = gradeStructure.findIndex((grade) => grade._id.equals(gradeId));
+      if (index === -1) {
+        return res.notFound("Grade does not exist", "GRADE_NOT_EXISTS");
       } else {
-        mailOptions = {
-          from: '"HCMUS Course" <course@hcmus.com>', // sender address
-          to: ownerEmail, // list of receivers
-          subject: "Student ID mapping request ✔", // Subject line
-          html:
-            `<p>This email is sent to you because student <b>${user.name}</b> wants to map his account to id <b>${studentId}</b> in class <b>${course.name}</b></p><br>` +
-            (message
-              ? `<p>Here is his message: <b>${message}</b></p><br>`
-              : "") +
-            `<p>Click <a href="${acceptLink}">this link</a> if you want to accept mapping request</p>`, // html body
-        };
+        gradeStructure.splice(index, 1);
       }
 
-      await transporter.sendMail(mailOptions, (err) => {
-        if (err) return res.failure(err.message, err.name);
-        res.ok(true);
+      //Re-map index
+      for (i = 0; i < gradeStructure.length; i++) {
+        const grade = gradeStructure[i];
+        grade.index = i;
+      }
+
+      await Course.findByIdAndUpdate(courseId, {
+        gradeStructure: gradeStructure,
       });
+
+      res.ok(gradeStructure);
     } catch (err) {
       console.log(err);
-      res.badRequest(err.message, err.name);
+      next(err);
     }
   },
-  acceptMappingRequest: async (req, res) => {
-    const { courseId, userId, studentId } = req.query;
+  insertGrade: async (req, res, next) => {
+    const userId = req.user.id;
+    const { courseId, name, point } = req.body;
 
     try {
       const course = await Course.findById(courseId);
       if (!course) {
-        return res.badRequest("Class does not exist", "CLASS_NOT_EXISTS");
+        return res.notFound("Class does not exist", "CLASS_NOT_EXISTS");
       }
 
-      if (course.owner.equals(userId)) {
-        return res.badRequest("You are class owner", "WRONG_REQUEST");
+      if (!course.owner.equals(userId) && !course.teachers.includes(userId)) {
+        return res.forbidden("Forbiden", "NO_PERMISSION_USER");
       }
 
-      if (course.teachers.includes(userId)) {
-        return res.badRequest(
-          "You are a teacher in this class",
-          "WRONG_REQUEST"
-        );
-      }
+      const gradeStructure = course.gradeStructure;
+      gradeStructure.push({ name, point, index: gradeStructure.length });
 
-      if (!course.participants.includes(userId)) {
-        return res.badRequest(
-          "You are not a student in this class",
-          "WRONG_REQUEST"
-        );
-      }
+      const updatedCourse = await Course.findByIdAndUpdate(courseId, {
+        gradeStructure: gradeStructure,
+      }, { new: true, upsert: true });
 
-      //remove current mapped user
-      await Mapping.findOneAndDelete({
-        courseId: courseId,
-        studentId: studentId,
-      });
-
-      //add new mapping
-      let mapping = new Mapping({
-        courseId: courseId,
-        userId: userId,
-        studentId: studentId,
-      });
-
-      mapping = await mapping.save();
-
-      res.ok(true);
+      res.ok(updatedCourse.gradeStructure);
     } catch (err) {
       console.log(err);
-      res.badRequest(err.message, err.name);
+      next(err);
     }
   },
-  findStudentMapping: async (req, res) => {
-    const { courseId } = req.params;
+  editGrade: async (req, res, next) => {
     const userId = req.user.id;
+    const { courseId, gradeId, name, point } = req.body;
 
-    const mapping = await Mapping.findOne({
-      courseId: courseId,
-      userId: userId,
-    });
-    if (mapping) {
-      return res.ok(mapping.studentId);
-    } else {
-      return res.notFound("You are not mapped to any student ID", "NOT_FOUND");
+    try {
+      const course = await Course.findById(courseId);
+      if (!course) {
+        return res.notFound("Class does not exist", "CLASS_NOT_EXISTS");
+      }
+
+      if (!course.owner.equals(userId) && !course.teachers.includes(userId)) {
+        return res.forbidden("Forbiden", "NO_PERMISSION_USER");
+      }
+
+      const gradeStructure = course.gradeStructure;
+      const index = gradeStructure.findIndex((grade) => grade._id.equals(gradeId));
+      if (index === -1) {
+        return res.notFound("Grade does not exist", "GRADE_NOT_EXISTS");
+      }
+
+      gradeStructure[index].name = name;
+      gradeStructure[index].point = point;
+
+      const updatedCourse = await Course.findByIdAndUpdate(courseId, {
+        gradeStructure: gradeStructure,
+      }, { new: true, upsert: true });
+
+      res.ok(updatedCourse.gradeStructure);
+    } catch (err) {
+      console.log(err);
+      next(err);
     }
-  },
+  }
 };
