@@ -463,7 +463,7 @@ module.exports = {
       next(err);
     }
   },
-  updateGradeStructure: async (req, res) => {
+  setGradeStructure: async (req, res, next) => {
     const userId = req.user.id;
     const { courseId, gradeStructure } = req.body;
 
@@ -482,14 +482,52 @@ module.exports = {
         grade.index = i;
       }
 
-      await Course.findByIdAndUpdate(courseId, {
+      const updatedCourse = await Course.findByIdAndUpdate(courseId, {
         gradeStructure: gradeStructure,
-      });
+      }, { new: true, upsert: true });
 
-      res.ok(true);
+      res.ok(updatedCourse.gradeStructure);
     } catch (err) {
       console.log(err);
       next(err);
     }
-  }
+  },
+  deleteGrade: async (req, res, next) => {
+    const userId = req.user.id;
+    const { courseId, gradeId } = req.body;
+
+    try {
+      const course = await Course.findById(courseId);
+      if (!course) {
+        return res.notFound("Class does not exist", "CLASS_NOT_EXISTS");
+      }
+
+      if (!course.owner.equals(userId) && !course.teachers.includes(userId)) {
+        return res.forbidden("Forbiden", "NO_PERMISSION_USER");
+      }
+
+      const gradeStructure = course.gradeStructure;
+      const index = gradeStructure.findIndex((grade) => grade._id.equals(gradeId));
+      if (index === -1) {
+        return res.notFound("Grade does not exist", "GRADE_NOT_EXISTS");
+      } else {
+        gradeStructure.splice(index, 1);
+      }
+
+      //Re-map index
+      for (i = 0; i < gradeStructure.length; i++) {
+        const grade = gradeStructure[i];
+        grade.index = i;
+      }
+
+      await Course.findByIdAndUpdate(courseId, {
+        gradeStructure: gradeStructure,
+      });
+
+      res.ok(gradeStructure);
+    } catch (err) {
+      console.log(err);
+      next(err);
+    }
+  },
 };

@@ -76,10 +76,24 @@ router.patch(
 
 router.patch(
   '/courses/grade',
-  validator(requestSchema.updateGradeStructure, "body"),
+  validator(requestSchema.setGradeStructure, "body"),
   authenticate,
-  controller.updateGradeStructure
+  controller.setGradeStructure
 );
+
+router.patch(
+  '/courses/grade',
+  validator(requestSchema.setGradeStructure, "body"),
+  authenticate,
+  controller.setGradeStructure
+);
+
+router.delete(
+  '/courses/grade',
+  validator(requestSchema.deleteGrade, "body"),
+  authenticate,
+  controller.deleteGrade
+)
 
 module.exports = router;
 

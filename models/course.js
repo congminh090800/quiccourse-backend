@@ -61,6 +61,7 @@ const courseSchema = new Schema(
       type: [
         {
           type: {
+            createdAt: { type: Date, default: Date.now },
             name: String,
             point: Number,
             index: Number,

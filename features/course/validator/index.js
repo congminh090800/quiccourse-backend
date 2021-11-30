@@ -4,5 +4,6 @@ module.exports = {
   sendInvitation: require("./send_invitation"),
   invitation: require('./invitation'),
   teacherInvitation: require('./teacher_invitation'),
-  updateGradeStructure: require('./update_grade_structure'),
+  setGradeStructure: require('./set_grade_structure'),
+  deleteGrade: require('./delete_grade'),
 };
