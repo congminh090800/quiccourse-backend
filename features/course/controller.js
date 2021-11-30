@@ -530,4 +530,31 @@ module.exports = {
       next(err);
     }
   },
+  insertGrade: async (req, res, next) => {
+    const userId = req.user.id;
+    const { courseId, name, point } = req.body;
+
+    try {
+      const course = await Course.findById(courseId);
+      if (!course) {
+        return res.notFound("Class does not exist", "CLASS_NOT_EXISTS");
+      }
+
+      if (!course.owner.equals(userId) && !course.teachers.includes(userId)) {
+        return res.forbidden("Forbiden", "NO_PERMISSION_USER");
+      }
+
+      const gradeStructure = course.gradeStructure;
+      gradeStructure.push({ name, point, index: gradeStructure.length });
+
+      const updatedCourse = await Course.findByIdAndUpdate(courseId, {
+        gradeStructure: gradeStructure,
+      }, { new: true, upsert: true });
+
+      res.ok(updatedCourse.gradeStructure);
+    } catch (err) {
+      console.log(err);
+      next(err);
+    }
+  },
 };

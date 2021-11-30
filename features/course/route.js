@@ -93,6 +93,13 @@ router.delete(
   validator(requestSchema.deleteGrade, "body"),
   authenticate,
   controller.deleteGrade
+);
+
+router.put(
+  '/courses/grade',
+  validator(requestSchema.insertGrade, "body"),
+  authenticate,
+  controller.insertGrade
 )
 
 module.exports = router;
