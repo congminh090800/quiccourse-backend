@@ -62,7 +62,7 @@ module.exports = {
       const accessToken = jwt.sign(
         { id: user._id },
         config.secret.accessToken,
-        { expiresIn: "10h" }
+        { expiresIn: config.secret.accessExpiresIn }
       );
       const refreshToken = jwt.sign(
         { id: user._id },
@@ -84,7 +84,7 @@ module.exports = {
       return res.ok({
         accessToken: accessToken,
         refreshToken: refreshToken,
-        expiredAt: new Date() + Number(config.secret.expiresIn),
+        expiredAt: Date.now() + Number(config.secret.expiresIn),
         user: updated,
       });
     } catch (err) {
@@ -167,7 +167,7 @@ module.exports = {
         const accessToken = jwt.sign(
           { id: result.id },
           config.secret.accessToken,
-          { expiresIn: "10h" }
+          { expiresIn: config.secret.accessExpiresIn }
         );
         User.findByIdAndUpdate(
           result.id,
