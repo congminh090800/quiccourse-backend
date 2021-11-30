@@ -7,4 +7,5 @@ module.exports = {
   setGradeStructure: require('./set_grade_structure'),
   deleteGrade: require('./delete_grade'),
   insertGrade: require('./insert_grade'),
+  editGrade: require('./edit_grade'),
 };
