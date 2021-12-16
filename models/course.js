@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 const { validateRoomCode } = require("lib/regex-helpers");
-
+const { enrolledStudentSchema } = require("./enrolled-student");
 const courseSchema = new Schema(
   {
     name: {
@@ -52,7 +52,7 @@ const courseSchema = new Schema(
         {
           type: Schema.Types.ObjectId,
           ref: "User",
-        }
+        },
       ],
       default: [],
     },
@@ -65,9 +65,16 @@ const courseSchema = new Schema(
             name: String,
             point: Number,
             index: Number,
-          }
-        }
-      ]
+            isFinalized: {
+              type: Boolean,
+              default: false,
+            },
+          },
+        },
+      ],
+    },
+    enrolledStudents: {
+      type: [enrolledStudentSchema],
     },
     deleted_flag: { type: Boolean, default: false },
   },

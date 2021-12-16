@@ -118,7 +118,7 @@ module.exports = {
         userId: mongoose.Types.ObjectId(userId),
       });
       const saved = await newAdmin.save();
-      res.ok(saved);
+      return res.ok(saved);
     } catch (err) {
       console.log("create admin failed", err);
       next(err);
@@ -181,7 +181,7 @@ module.exports = {
             if (err) {
               throw err;
             } else {
-              res.ok(doc.accessToken);
+              return res.ok(doc.accessToken);
             }
           }
         );
@@ -214,19 +214,25 @@ module.exports = {
     try {
       const existed = await User.findOne({ studentId: studentId });
       if (existed) {
-        return res.badRequest("This Student ID is mapped to another user", "Bad Request");
+        return res.badRequest(
+          "This Student ID is mapped to another user",
+          "Bad Request"
+        );
       }
 
       const user = await User.findById(userId);
 
       if (user.studentId != null) {
-        return res.badRequest('Your account already has Student ID', 'Bad Request');
+        return res.badRequest(
+          "Your account already has Student ID",
+          "Bad Request"
+        );
       }
 
       user.studentId = studentId;
       await user.save();
 
-      res.ok(true);
+      return res.ok(true);
     } catch (err) {
       console.log(err);
       next(err);

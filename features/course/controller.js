@@ -39,8 +39,8 @@ module.exports = {
         backgroundImg: body.backgroundImg ? body.backgroundImg : "",
         participants: participants
           ? participants.map((participant) =>
-            mongoose.Types.ObjectId(participant)
-          )
+              mongoose.Types.ObjectId(participant)
+            )
           : [],
       });
 
@@ -95,7 +95,7 @@ module.exports = {
         limit: limit,
       };
       const courses = await Course.paginate(where, options);
-      res.ok(courses);
+      return res.ok(courses);
     } catch (err) {
       console.log("search courses failed:", err);
       next(err);
@@ -156,7 +156,7 @@ module.exports = {
         limit: limit,
       };
       const courses = await Course.paginate(where, options);
-      res.ok(courses);
+      return res.ok(courses);
     } catch (err) {
       console.log("search courses failed:", err);
       next(err);
@@ -269,7 +269,7 @@ module.exports = {
           participants: userId,
         },
       });
-      res.ok(true);
+      return res.ok(true);
     } catch (err) {
       console.log(err);
       next(err);
@@ -341,7 +341,7 @@ module.exports = {
 
       await transporter.sendMail(mailOptions, (err) => {
         if (err) return res.failure(err.message, err.name);
-        res.ok(true);
+        return res.ok(true);
       });
     } catch (err) {
       console.log(err);
@@ -386,11 +386,11 @@ module.exports = {
 
           await transporter.sendMail(mailOptions, (err) => {
             if (err) return res.failure(err.message, err.name);
-            res.ok(true);
+            return res.ok(true);
           });
         }
       }
-      res.ok(true);
+      return res.ok(true);
     } catch (err) {
       console.log(err);
       next(err);
@@ -457,7 +457,7 @@ module.exports = {
       });
       await Invitation.findByIdAndUpdate(invitation.id, { isUsed: true });
 
-      res.ok(true);
+      return res.ok(true);
     } catch (err) {
       console.log(err);
       next(err);
@@ -482,11 +482,15 @@ module.exports = {
         grade.index = i;
       }
 
-      const updatedCourse = await Course.findByIdAndUpdate(courseId, {
-        gradeStructure: gradeStructure,
-      }, { new: true, upsert: true });
+      const updatedCourse = await Course.findByIdAndUpdate(
+        courseId,
+        {
+          gradeStructure: gradeStructure,
+        },
+        { new: true, upsert: true }
+      );
 
-      res.ok(updatedCourse.gradeStructure);
+      return res.ok(updatedCourse.gradeStructure);
     } catch (err) {
       console.log(err);
       next(err);
@@ -507,7 +511,9 @@ module.exports = {
       }
 
       const gradeStructure = course.gradeStructure;
-      const index = gradeStructure.findIndex((grade) => grade._id.equals(gradeId));
+      const index = gradeStructure.findIndex((grade) =>
+        grade._id.equals(gradeId)
+      );
       if (index === -1) {
         return res.notFound("Grade does not exist", "GRADE_NOT_EXISTS");
       } else {
@@ -524,7 +530,7 @@ module.exports = {
         gradeStructure: gradeStructure,
       });
 
-      res.ok(gradeStructure);
+      return res.ok(gradeStructure);
     } catch (err) {
       console.log(err);
       next(err);
@@ -547,11 +553,15 @@ module.exports = {
       const gradeStructure = course.gradeStructure;
       gradeStructure.push({ name, point, index: gradeStructure.length });
 
-      const updatedCourse = await Course.findByIdAndUpdate(courseId, {
-        gradeStructure: gradeStructure,
-      }, { new: true, upsert: true });
+      const updatedCourse = await Course.findByIdAndUpdate(
+        courseId,
+        {
+          gradeStructure: gradeStructure,
+        },
+        { new: true, upsert: true }
+      );
 
-      res.ok(updatedCourse.gradeStructure);
+      return res.ok(updatedCourse.gradeStructure);
     } catch (err) {
       console.log(err);
       next(err);
@@ -572,7 +582,9 @@ module.exports = {
       }
 
       const gradeStructure = course.gradeStructure;
-      const index = gradeStructure.findIndex((grade) => grade._id.equals(gradeId));
+      const index = gradeStructure.findIndex((grade) =>
+        grade._id.equals(gradeId)
+      );
       if (index === -1) {
         return res.notFound("Grade does not exist", "GRADE_NOT_EXISTS");
       }
@@ -580,14 +592,18 @@ module.exports = {
       gradeStructure[index].name = name;
       gradeStructure[index].point = point;
 
-      const updatedCourse = await Course.findByIdAndUpdate(courseId, {
-        gradeStructure: gradeStructure,
-      }, { new: true, upsert: true });
+      const updatedCourse = await Course.findByIdAndUpdate(
+        courseId,
+        {
+          gradeStructure: gradeStructure,
+        },
+        { new: true, upsert: true }
+      );
 
-      res.ok(updatedCourse.gradeStructure);
+      return res.ok(updatedCourse.gradeStructure);
     } catch (err) {
       console.log(err);
       next(err);
     }
-  }
+  },
 };
