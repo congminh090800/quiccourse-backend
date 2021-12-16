@@ -20,7 +20,7 @@ const enrolledStudentSchema = new Schema(
       min: 3,
     },
     studentId: {
-      type: Schema.Types.ObjectId,
+      type: String,
       required: true,
     },
     courseId: {

@@ -6,7 +6,7 @@ const csv = require("@fast-csv/parse");
 module.exports = {
   generateStudentTemplate: async (req, res, next) => {
     try {
-      const rows = [["Full name", "Student ID"]];
+      const rows = [["full_name", "student_id"]];
       const data = await writeToString(rows);
       res.set("Content-Type", "text/csv");
       res.setHeader(
@@ -21,12 +21,64 @@ module.exports = {
   },
   uploadStudentList: async (req, res, next) => {
     try {
+      const { courseId } = req.body;
+      const { id } = req.user;
+      const selectedCourse = await Course.findOne({
+        _id: mongoose.Types.ObjectId(courseId),
+        deleted_flag: false,
+      });
+      if (!selectedCourse) {
+        return res.notFound("Class does not exist", "Class does not exist");
+      }
+
+      if (selectedCourse.owner != id) {
+        return res.badRequest("You are not the owner", "Permission denied");
+      }
+      const csvString = Buffer.from(req.file.buffer).toString();
+      let errors = [];
+      let enrolledStudents = [];
+      let index = 1;
       csv
-        .parseFile(req.file)
-        .on("error", (error) => console.error(error))
-        .on("data", (row) => console.log(`ROW=${JSON.stringify(row)}`))
-        .on("end", (rowCount) => console.log(`Parsed ${rowCount} rows`));
-      return res.ok(true);
+        .parseString(csvString, { headers: true })
+        .on("error", (error) => {
+          console.log(error);
+          return res.badRequest("Error in reading csv", "Bad request");
+        })
+        .on("data", (row) => {
+          if (!row.full_name || row.full_name.length < 3) {
+            errors.push(`row ${index} full_name is null or less than 3 chars`);
+          } else if (!row.student_id) {
+            errors.push(`row ${index} student_id is null`);
+          } else {
+            enrolledStudents.push({
+              fullName: row.full_name,
+              studentId: row.student_id,
+              courseId: mongoose.Types.ObjectId(courseId),
+            });
+          }
+          index++;
+        })
+        .on("end", async (rowCount) => {
+          try {
+            const updated = await Course.findByIdAndUpdate(
+              courseId,
+              {
+                enrolledStudents: enrolledStudents,
+              },
+              {
+                returnDocument: "after",
+              }
+            );
+            return res.ok({
+              totalRows: rowCount,
+              errors: errors,
+              document: updated,
+            });
+          } catch (err) {
+            console.log(err);
+            return res.badRequest("Error occured", "Bad request");
+          }
+        });
     } catch (err) {
       console.log("upload student list failed:", err);
       next(err);
