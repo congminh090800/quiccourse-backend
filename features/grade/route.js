@@ -16,6 +16,15 @@ router.get(
   authenticate,
   controller.generateStudentTemplate
 );
+
+router.get(
+  "/grade/grade-template",
+  authenticate,
+  roleAuthenticate,
+  validator(requestSchema.gradeTemplate, "query"),
+  controller.gradeTemplate
+);
+
 router.put(
   "/grade/upload-student-list",
   upload.single("csvFile"),
@@ -39,14 +48,6 @@ router.patch(
   roleAuthenticate,
   validator(requestSchema.addStudent),
   controller.addStudent
-)
-
-router.get(
-  "/grade/grade-template",
-  authenticate,
-  roleAuthenticate,
-  validator(requestSchema.gradeTemplate),
-  controller.gradeTemplate
 )
 module.exports = router;
 
@@ -146,4 +147,25 @@ module.exports = router;
  *          200:
  *              description: OK
  *
+ */
+
+/**
+ * @swagger
+ * /api/grade/grade-template:
+ *  get:
+ *      tags:
+ *          - grade
+ *      summary: Download csv grade template
+ *      parameters:
+ *          -   name: courseId
+ *              in: query
+ *              schema:
+ *                  type: string
+ *          -   name: gradeComponentId
+ *              in: query
+ *              schema:
+ *                  type: string
+ *      responses:
+ *          200:
+ *              description: Return csv file
  */

@@ -218,7 +218,9 @@ module.exports = {
   },
   gradeTemplate: async (req, res, next) => {
     try {
-      const { courseId, gradeComponentId } = req.body;
+      console.log("req", req);
+      const { courseId, gradeComponentId } = req.query;
+      console.log("courseId", courseId);
       const selectedCourse = await Course.findOne({
         _id: mongoose.Types.ObjectId(courseId),
         deleted_flag: false,
@@ -232,7 +234,37 @@ module.exports = {
       if (!validGradeCom) {
         return res.notFound("Grade component does not exist in grade stucture", "Not found");
       }
-      return res.ok();
+      let enrolledStudents = selectedCourse.enrolledStudents || [];
+      let csvObject = [];
+      for (let student of enrolledStudents) {
+        let baseInfo = {
+          student_id: student.studentId || "",
+          full_name: student.fullName || "",
+        }
+        const pointColumnName = `${validGradeCom.point}-${validGradeCom.name}`;
+        const grades = student.grades || [];
+        const gradeInfo = grades.find(grade => grade.gradeComponentId.equals(mongoose.Types.ObjectId(gradeComponentId)));
+        if (!gradeInfo) {
+          csvObject.push({
+            ...baseInfo,
+            [pointColumnName]: null
+          })
+        } else {
+          csvObject.push({
+            student_id: student.studentId || "",
+            full_name: student.fullName || "",
+            [pointColumnName]: Number(gradeInfo.point) || 0,
+          })
+        }
+      }
+
+      const data = await writeToString(csvObject, { headers: true });
+      res.set("Content-Type", "text/csv");
+      res.setHeader(
+        "Content-disposition",
+        "attachment; filename=grade-template.csv"
+      );
+      return res.send(data);
     } catch (err) {
       console.log("download grade template failed:", err);
       next(err);

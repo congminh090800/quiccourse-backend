@@ -4,7 +4,7 @@ const Course = require("../models/course");
 
 module.exports = async (req, res, next) => {
     const userId = req.user.id;
-    const courseId = req.body.courseId;
+    const courseId = req.body.courseId || req.query.courseId;
 
     const course = await Course.findById(courseId);
 
