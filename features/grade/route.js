@@ -41,11 +41,13 @@ router.patch(
   controller.addStudent
 )
 
-// router.get(
-//   "/grade/grade-template",
-//   authenticate,
-//   roleAuthenticate,
-// )
+router.get(
+  "/grade/grade-template",
+  authenticate,
+  roleAuthenticate,
+  validator(requestSchema.gradeTemplate),
+  controller.gradeTemplate
+)
 module.exports = router;
 
 /**

@@ -72,6 +72,7 @@ const courseSchema = new Schema(
           },
         },
       ],
+      default: [],
     },
     enrolledStudents: {
       type: [enrolledStudentSchema],

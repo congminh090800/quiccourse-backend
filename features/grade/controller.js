@@ -1,5 +1,5 @@
 const { writeToString } = require("@fast-csv/format");
-const { Course, User } = require("models");
+const { Course } = require("models");
 const mongoose = require("mongoose");
 const csv = require("@fast-csv/parse");
 
@@ -95,7 +95,8 @@ module.exports = {
         return res.notFound("Class does not exist", "Class does not exist");
       }
       const formattedComponentId = mongoose.Types.ObjectId(gradeComponentId);
-      const validGradeCom = selectedCourse.gradeStructure.find(gradeComponent => gradeComponent._id.equals(formattedComponentId));
+      const gradeStructure = selectedCourse.gradeStructure || [];
+      const validGradeCom = gradeStructure.find(gradeComponent => gradeComponent._id.equals(formattedComponentId));
       if (!validGradeCom) {
         return res.notFound("Grade component does not exist in grade stucture", "Not found");
       }
@@ -212,6 +213,28 @@ module.exports = {
       }
     } catch (err) {
       console.log("add student failed:", err);
+      next(err);
+    }
+  },
+  gradeTemplate: async (req, res, next) => {
+    try {
+      const { courseId, gradeComponentId } = req.body;
+      const selectedCourse = await Course.findOne({
+        _id: mongoose.Types.ObjectId(courseId),
+        deleted_flag: false,
+      });
+      if (!selectedCourse) {
+        return res.notFound("Class does not exist", "Class does not exist");
+      }
+      const formattedComponentId = mongoose.Types.ObjectId(gradeComponentId);
+      const gradeStructure = selectedCourse.gradeStructure || [];
+      const validGradeCom = gradeStructure.find(gradeComponent => gradeComponent._id.equals(formattedComponentId));
+      if (!validGradeCom) {
+        return res.notFound("Grade component does not exist in grade stucture", "Not found");
+      }
+      return res.ok();
+    } catch (err) {
+      console.log("download grade template failed:", err);
       next(err);
     }
   }
