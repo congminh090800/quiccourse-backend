@@ -112,7 +112,7 @@ module.exports = {
           errors.push(`Student ${pointInfo.studentId} can not be greater than ${validGradeCom.point}`);
           continue;
         }
-        let grades = validStudent.grades;
+        let grades = validStudent.grades || [];
         let updateMode = grades.find(grade => grade.gradeComponentId.equals(formattedComponentId));
         if (!updateMode) {
           grades.push({
@@ -171,11 +171,47 @@ module.exports = {
       if (selectedCourse.owner != id) {
         return res.badRequest("You are not the owner", "Permission denied");
       }
-      const enrolledStudents = selectedCourse.enrolledStudents || [];
+      let enrolledStudents = selectedCourse.enrolledStudents || [];
       if (!enrolledStudents.find(student => studentId === student.studentId)) {
+        const newStudent = {
+          fullName,
+          studentId,
+          courseId,
+          grades: [],
+        };
+        const updated = await Course.findByIdAndUpdate(
+          courseId,
+          {
+            '$push': {
+              enrolledStudents: newStudent,
+            }
+          },
+          {
+            returnDocument: "after",
+          }
+        );
+        return res.ok(updated);
+      } else {
+        enrolledStudents = enrolledStudents.map(student => {
+          if (student.studentId === studentId) {
+            return {
+              ...student,
+              fullName: fullName,
+            }
+          };
+          return student;
+        });
+        const updated = await Course.findByIdAndUpdate(
+          courseId,
+          {
+            enrolledStudents: enrolledStudents,
+          },
+          {
+            returnDocument: "after",
+          }
+        );
+        return res.ok(updated);
       }
-
-      return res.ok();
     } catch (err) {
       console.log("add student failed:", err);
       next(err);

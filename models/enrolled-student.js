@@ -29,6 +29,7 @@ const enrolledStudentSchema = new Schema(
     },
     grades: {
       type: [gradeSchema],
+      default: [],
     },
     deleted_flag: { type: Boolean, default: false },
   },
