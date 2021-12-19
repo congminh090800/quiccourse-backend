@@ -375,5 +375,79 @@ module.exports = {
       console.log("upload grade failed", err);
       next(err);
     }
+  },
+  finalizeColumn: async (req, res, next) => {
+    try {
+      const { courseId, gradeComponentId } = req.body;
+      const { id } = req.user;
+      const selectedCourse = await Course.findOne({
+        _id: mongoose.Types.ObjectId(courseId),
+        deleted_flag: false,
+      });
+      if (!selectedCourse) {
+        return res.notFound("Class does not exist", "Class does not exist");
+      }
+
+      if (selectedCourse.owner != id) {
+        return res.badRequest("You are not the owner", "Permission denied");
+      }
+      doc = await Course.findByIdAndUpdate(
+        courseId,
+        {
+          '$set': {
+            'gradeStructure.$[el].isFinalized': true, 
+          }
+        },
+        {
+          arrayFilters: [
+            {
+              'el._id': mongoose.Types.ObjectId(gradeComponentId),
+            }
+          ],
+          returnDocument: "after",
+        }
+      );
+      return res.ok(doc);
+    } catch (err) {
+      console.log("finalize column failed:", err);
+      next(err);
+    }
+  },
+  unfinalizeColumn: async (req, res, next) => {
+    try {
+      const { courseId, gradeComponentId } = req.body;
+      const { id } = req.user;
+      const selectedCourse = await Course.findOne({
+        _id: mongoose.Types.ObjectId(courseId),
+        deleted_flag: false,
+      });
+      if (!selectedCourse) {
+        return res.notFound("Class does not exist", "Class does not exist");
+      }
+
+      if (selectedCourse.owner != id) {
+        return res.badRequest("You are not the owner", "Permission denied");
+      }
+      doc = await Course.findByIdAndUpdate(
+        courseId,
+        {
+          '$set': {
+            'gradeStructure.$[el].isFinalized': false, 
+          }
+        },
+        {
+          arrayFilters: [
+            {
+              'el._id': mongoose.Types.ObjectId(gradeComponentId),
+            }
+          ],
+          returnDocument: "after",
+        }
+      );
+      return res.ok(doc);
+    } catch (err) {
+      console.log("unfinalize column failed:", err);
+      next(err);
+    }
   }
 };

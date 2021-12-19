@@ -58,6 +58,22 @@ router.put(
   validator(requestSchema.uploadGrades),
   controller.uploadGrades
 );
+
+router.patch(
+  "/grade/finalize-column",
+  authenticate,
+  roleAuthenticate,
+  validator(requestSchema.finalizeGradeComponent),
+  controller.finalizeColumn
+);
+
+router.patch(
+  "/grade/unfinalize-column",
+  authenticate,
+  roleAuthenticate,
+  validator(requestSchema.finalizeGradeComponent),
+  controller.unfinalizeColumn
+);
 module.exports = router;
 
 /**
@@ -206,5 +222,53 @@ module.exports = router;
  *      responses:
  *          200:
  *              description: Return result
+ *
+ */
+
+/**
+ * @swagger
+ * /api/grade/finalize-column:
+ *  patch:
+ *      tags:
+ *          - grade
+ *      summary: Finalize a grade component of structure
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      example:
+ *                           {
+ *                               "courseId": "619d0228ca30412f1dfcee09",
+ *                               "gradeComponentId": "61a664c7b64e25dd815e8b1a",
+ *                           }
+ *      responses:
+ *          200:
+ *              description: OK
+ *
+ */
+
+/**
+ * @swagger
+ * /api/grade/unfinalize-column:
+ *  patch:
+ *      tags:
+ *          - grade
+ *      summary: Unfinalize a grade component of structure
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      example:
+ *                           {
+ *                               "courseId": "619d0228ca30412f1dfcee09",
+ *                               "gradeComponentId": "61a664c7b64e25dd815e8b1a",
+ *                           }
+ *      responses:
+ *          200:
+ *              description: OK
  *
  */
