@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 const { validatePhone } = require("lib/regex-helpers");
-
+const { notificationSchema } = require("./notification");
 const userSchema = new Schema(
   {
     email: {
@@ -52,6 +52,10 @@ const userSchema = new Schema(
     },
     studentId: {
       type: String,
+    },
+    notifications: {
+      type: [notificationSchema],
+      default: [],
     },
     deleted_flag: { type: Boolean, default: false },
   },
