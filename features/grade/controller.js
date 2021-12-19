@@ -192,21 +192,19 @@ module.exports = {
         );
         return res.ok(updated);
       } else {
-        enrolledStudents = enrolledStudents.map(student => {
-          if (student.studentId === studentId) {
-            return {
-              ...student,
-              fullName: fullName,
-            }
-          };
-          return student;
-        });
         const updated = await Course.findByIdAndUpdate(
           courseId,
           {
-            enrolledStudents: enrolledStudents,
+            '$set': {
+              'enrolledStudents.$[el].fullName': fullName, 
+            }
           },
           {
+            arrayFilters: [
+              {
+                'el.studentId': studentId,
+              }
+            ],
             returnDocument: "after",
           }
         );
