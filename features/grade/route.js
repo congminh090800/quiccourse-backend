@@ -40,7 +40,7 @@ router.put(
   roleAuthenticate,
   validator(requestSchema.finalizeGrades),
   controller.finalizeGrades
-)
+);
 
 router.patch(
   "/grade/add-or-update-student",
@@ -48,7 +48,16 @@ router.patch(
   roleAuthenticate,
   validator(requestSchema.addStudent),
   controller.addStudent
-)
+);
+
+router.put(
+  "/grade/upload-grades",
+  upload.single("csvFile"),
+  authenticate,
+  roleAuthenticate,
+  validator(requestSchema.uploadGrades),
+  controller.uploadGrades
+);
 module.exports = router;
 
 /**
@@ -168,4 +177,34 @@ module.exports = router;
  *      responses:
  *          200:
  *              description: Return csv file
+ */
+
+/**
+ * @swagger
+ * /api/grade/upload-grades:
+ *  put:
+ *      tags:
+ *          - grade
+ *      summary: Upload csv grade
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              multipart/form-data:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          courseId:
+ *                              type: string
+ *                              required: true
+ *                          gradeComponentId:
+ *                              type: string
+ *                              requỉed: true
+ *                          csvFile:
+ *                              type: string
+ *                              format: binary
+ *                              required: true
+ *      responses:
+ *          200:
+ *              description: Return result
+ *
  */

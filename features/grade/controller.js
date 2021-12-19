@@ -54,6 +54,9 @@ module.exports = {
               fullName: row.full_name,
               studentId: row.student_id,
               courseId: mongoose.Types.ObjectId(courseId),
+              grades: [],
+              deleted_flag: false,
+              _id: new mongoose.Types.ObjectId().toHexString(),
             });
           }
           index++;
@@ -66,6 +69,7 @@ module.exports = {
                 enrolledStudents: enrolledStudents,
               },
               {
+                overwrite: true,
                 returnDocument: "after",
               }
             );
@@ -118,7 +122,8 @@ module.exports = {
         if (!updateMode) {
           grades.push({
             point: Number(pointInfo.point),
-            gradeComponentId: formattedComponentId
+            gradeComponentId: formattedComponentId,
+            _id: new mongoose.Types.ObjectId().toHexString(),
           });
         } else {
           grades = grades.map(grade => {
@@ -144,6 +149,7 @@ module.exports = {
                 'el.studentId': pointInfo.studentId,
               }
             ],
+            overwrite: true,
             returnDocument: "after",
           }
         );
@@ -265,6 +271,105 @@ module.exports = {
       return res.send(data);
     } catch (err) {
       console.log("download grade template failed:", err);
+      next(err);
+    }
+  },
+  uploadGrades: async (req, res, next) => {
+    try {
+      const { courseId, gradeComponentId } = req.body;
+      const selectedCourse = await Course.findOne({
+        _id: mongoose.Types.ObjectId(courseId),
+        deleted_flag: false,
+      });
+      if (!selectedCourse) {
+        return res.notFound("Class does not exist", "Class does not exist");
+      }
+      const formattedComponentId = mongoose.Types.ObjectId(gradeComponentId);
+      const gradeStructure = selectedCourse.gradeStructure || [];
+      const validGradeCom = gradeStructure.find(gradeComponent => gradeComponent._id.equals(formattedComponentId));
+      if (!validGradeCom) {
+        return res.notFound("Grade component does not exist in grade stucture", "Not found");
+      }
+      const csvString = Buffer.from(req.file.buffer).toString();
+      let errors = [];
+      let index = 1;
+      csv.parseString(csvString, { headers: true })
+      .on("error", (error) => {
+        console.log(error);
+        return res.badRequest("Error reading grade csv", "Bad request");
+      })
+      .on("data", async (row) => {
+        const columnName = `${validGradeCom.point}-${validGradeCom.name}`;
+        if (!row.student_id) {
+          errors.push(`row ${index} student_id is null`);
+        } else if (!row[columnName] || isNaN(row[columnName])) {
+          errors.push(`row ${index} point must be a number`);
+        } else if (Number(row[columnName]) >  validGradeCom.point) {
+          errors.push(`row ${index} point must not exceed ${validGradeCom.point}`);
+        } else {
+          const enrolledStudents = selectedCourse.enrolledStudents || [];
+          const validStudent = enrolledStudents.find(student => student.studentId === row.student_id);
+          if (!validStudent) {
+            errors.push(`row ${index} student_id does not exist in enrolled list`);
+          } else {
+            let grades = validStudent.grades || [];
+            let updateMode = grades.find(grade => grade.gradeComponentId.equals(formattedComponentId));
+            if (!updateMode) {
+              grades.push({
+                point: Number(row[columnName]),
+                gradeComponentId: formattedComponentId,
+                _id: new mongoose.Types.ObjectId().toHexString(),
+              });
+            } else {
+              grades = grades.map(grade => {
+                if (grade.gradeComponentId.equals(formattedComponentId)) {
+                  return {
+                    ...grade,
+                    point: Number(row[columnName]),
+                  };
+                };
+                return grade;
+              });
+            }
+            doc = await Course.findByIdAndUpdate(
+              courseId,
+              {
+                '$set': {
+                  'enrolledStudents.$[el].grades': grades, 
+                }
+              },
+              {
+                arrayFilters: [
+                  {
+                    'el.studentId': row.student_id,
+                  }
+                ],
+                overwrite: true,
+                returnDocument: "after",
+              }
+            );
+          }
+        }
+        index++;
+      })
+      .on("end", async (rowCount) => {
+        try {
+          const doc = await Course.findOne({
+            _id: mongoose.Types.ObjectId(courseId),
+            deleted_flag: false,
+          });
+          return res.ok({
+            totalRows: rowCount,
+            errors: errors,
+            document: doc,
+          });
+        } catch (err) {
+          console.log(err);
+          return res.badRequest("Error occured", "Bad request");
+        }
+      });
+    } catch (err) {
+      console.log("upload grade failed", err);
       next(err);
     }
   }
