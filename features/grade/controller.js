@@ -218,9 +218,7 @@ module.exports = {
   },
   gradeTemplate: async (req, res, next) => {
     try {
-      console.log("req", req);
       const { courseId, gradeComponentId } = req.query;
-      console.log("courseId", courseId);
       const selectedCourse = await Course.findOne({
         _id: mongoose.Types.ObjectId(courseId),
         deleted_flag: false,
