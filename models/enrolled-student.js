@@ -10,7 +10,7 @@ const gradeSchema = new Schema({
     type: Schema.Types.ObjectId,
     required: true,
   },
-});
+}, { _id : false });
 
 const enrolledStudentSchema = new Schema(
   {

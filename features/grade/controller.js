@@ -118,23 +118,17 @@ module.exports = {
           continue;
         }
         let grades = validStudent.grades || [];
-        let updateMode = grades.find(grade => grade.gradeComponentId.equals(formattedComponentId));
-        if (!updateMode) {
+        let updateMode = grades.findIndex(grade => grade.gradeComponentId.equals(formattedComponentId));
+        if (updateMode < 0) {
           grades.push({
             point: Number(pointInfo.point),
             gradeComponentId: formattedComponentId,
-            _id: new mongoose.Types.ObjectId().toHexString(),
           });
         } else {
-          grades = grades.map(grade => {
-            if (grade.gradeComponentId.equals(formattedComponentId)) {
-              return {
-                ...grade,
-                point: pointInfo.point,
-              };
-            };
-            return grade;
-          });
+          grades[updateMode] = {
+            point: Number(pointInfo.point),
+            gradeComponentId: formattedComponentId,
+          }
         }
         doc = await Course.findByIdAndUpdate(
           courseId,
@@ -149,7 +143,6 @@ module.exports = {
                 'el.studentId': pointInfo.studentId,
               }
             ],
-            overwrite: !updateMode ? true : false,
             returnDocument: "after",
           }
         );
@@ -316,23 +309,17 @@ module.exports = {
             errors.push(`row ${index} student_id does not exist in enrolled list`);
           } else {
             let grades = validStudent.grades || [];
-            let updateMode = grades.find(grade => grade.gradeComponentId.equals(formattedComponentId));
-            if (!updateMode) {
+            let updateMode = grades.findIndex(grade => grade.gradeComponentId.equals(formattedComponentId));
+            if (updateMode < 0) {
               grades.push({
                 point: Number(row[columnName]),
                 gradeComponentId: formattedComponentId,
-                _id: new mongoose.Types.ObjectId().toHexString(),
               });
             } else {
-              grades = grades.map(grade => {
-                if (grade.gradeComponentId.equals(formattedComponentId)) {
-                  return {
-                    ...grade,
-                    point: Number(row[columnName]),
-                  };
-                };
-                return grade;
-              });
+              grades[updateMode] = {
+                point: Number(row[columnName]),
+                gradeComponentId: formattedComponentId,
+              }
             }
             doc = await Course.findByIdAndUpdate(
               courseId,
@@ -347,29 +334,18 @@ module.exports = {
                     'el.studentId': row.student_id,
                   }
                 ],
-                overwrite: !updateMode ? true : false,
-                returnDocument: "after",
+                returnDocument: "after"
               }
             );
           }
         }
         index++;
       })
-      .on("end", async (rowCount) => {
-        try {
-          const doc = await Course.findOne({
-            _id: mongoose.Types.ObjectId(courseId),
-            deleted_flag: false,
-          });
-          return res.ok({
-            totalRows: rowCount,
-            errors: errors,
-            document: doc,
-          });
-        } catch (err) {
-          console.log(err);
-          return res.badRequest("Error occured", "Bad request");
-        }
+      .on("end", (rowCount) => {
+        return res.ok({
+          totalRows: rowCount,
+          errors: errors
+        });
       });
     } catch (err) {
       console.log("upload grade failed", err);
