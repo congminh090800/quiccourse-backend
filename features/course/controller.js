@@ -149,13 +149,13 @@ module.exports = {
         sort: { createdAt: -1 },
         populate: {
           path: "owner participants teachers",
-          select: "-password -accessToken -refreshToken",
+          select: "-password -accessToken -refreshToken -enrolledStudents",
         },
         lean: true,
         offset: offset,
         limit: limit,
       };
-      const courses = await Course.paginate(where, options);
+      let courses = await Course.paginate(where, options);
       return res.ok(courses);
     } catch (err) {
       console.log("search courses failed:", err);
@@ -198,6 +198,7 @@ module.exports = {
           new: true,
         }
       );
+      updated.enrolledStudents = undefined;
       return res.ok(updated);
     } catch (err) {
       console.log("participate failed", err);
@@ -294,7 +295,7 @@ module.exports = {
         ],
       };
       const removedFields = "-password -accessToken -refreshToken";
-      const course = await Course.findOne(where)
+      let course = await Course.findOne(where)
         .populate("owner", removedFields)
         .populate("teachers", removedFields)
         .populate("participants", removedFields);
@@ -303,6 +304,9 @@ module.exports = {
           "Require course's existence and you are in this class",
           "Bad request"
         );
+      }
+      if (course.participants.find(participant => participant._id.equals(mongoose.Types.ObjectId(req.user.id)))) {
+        const finalizedGradeComponents = course.gradeStructure.filter(g => g.isFinalized).map(g => g._id);
       }
       return res.ok(course);
     } catch (err) {

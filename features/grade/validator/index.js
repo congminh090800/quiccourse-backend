@@ -4,4 +4,5 @@ module.exports = {
   addStudent: require("./add-student"),
   gradeTemplate: require("./grade-template"),
   uploadGrades: require("./upload-grades"),
+  finalizeGradeComponent: require("./finalize-grade-component"),
 };

@@ -239,13 +239,13 @@ module.exports = {
         return res.notFound("Grade component does not exist in grade stucture", "Not found");
       }
       let enrolledStudents = selectedCourse.enrolledStudents || [];
+      const pointColumnName = `${validGradeCom.point}-${validGradeCom.name}`;
       let csvObject = [];
       for (let student of enrolledStudents) {
         let baseInfo = {
           student_id: student.studentId || "",
           full_name: student.fullName || "",
         }
-        const pointColumnName = `${validGradeCom.point}-${validGradeCom.name}`;
         const grades = student.grades || [];
         const gradeInfo = grades.find(grade => grade.gradeComponentId.equals(mongoose.Types.ObjectId(gradeComponentId)));
         if (!gradeInfo) {
@@ -261,8 +261,11 @@ module.exports = {
           })
         }
       }
-
+      if (!csvObject || csvObject.length === 0) {
+        csvObject = [["student_id", "full_name", pointColumnName]];
+      }
       const data = await writeToString(csvObject, { headers: true });
+
       res.set("Content-Type", "text/csv");
       res.setHeader(
         "Content-disposition",
