@@ -149,7 +149,7 @@ module.exports = {
                 'el.studentId': pointInfo.studentId,
               }
             ],
-            overwrite: true,
+            overwrite: !updateMode ? true : false,
             returnDocument: "after",
           }
         );
@@ -347,7 +347,7 @@ module.exports = {
                     'el.studentId': row.student_id,
                   }
                 ],
-                overwrite: true,
+                overwrite: !updateMode ? true : false,
                 returnDocument: "after",
               }
             );
