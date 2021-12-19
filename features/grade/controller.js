@@ -102,7 +102,8 @@ module.exports = {
       let errors = [];
       let doc = {};
       for (const pointInfo of listPoints) {
-        const validStudent = selectedCourse.enrolledStudents.find(student => student.studentId === pointInfo.studentId);
+        const enrolledStudents = selectedCourse.enrolledStudents || [];
+        const validStudent = enrolledStudents.find(student => student.studentId === pointInfo.studentId);
         if (!validStudent) {
           errors.push(`Student ${pointInfo.studentId} is not exist in enrolled list`);
           continue;
@@ -152,6 +153,31 @@ module.exports = {
       });
     } catch (err) {
       console.log("finalize grade failed:", err);
+      next(err);
+    }
+  },
+  addStudent: async (req, res, next) => {
+    try {
+      const { courseId, fullName, studentId } = req.body;
+      const { id } = req.user;
+      const selectedCourse = await Course.findOne({
+        _id: mongoose.Types.ObjectId(courseId),
+        deleted_flag: false,
+      });
+      if (!selectedCourse) {
+        return res.notFound("Class does not exist", "Class does not exist");
+      }
+
+      if (selectedCourse.owner != id) {
+        return res.badRequest("You are not the owner", "Permission denied");
+      }
+      const enrolledStudents = selectedCourse.enrolledStudents || [];
+      if (!enrolledStudents.find(student => studentId === student.studentId)) {
+      }
+
+      return res.ok();
+    } catch (err) {
+      console.log("add student failed:", err);
       next(err);
     }
   }

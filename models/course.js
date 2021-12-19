@@ -75,6 +75,7 @@ const courseSchema = new Schema(
     },
     enrolledStudents: {
       type: [enrolledStudentSchema],
+      default: [],
     },
     deleted_flag: { type: Boolean, default: false },
   },
