@@ -84,4 +84,75 @@ module.exports = {
       next(err);
     }
   },
+  finalizeGrades: async (req, res, next) => {
+    try {
+      const { courseId, gradeComponentId, listPoints } = req.body;
+      const selectedCourse = await Course.findOne({
+        _id: mongoose.Types.ObjectId(courseId),
+        deleted_flag: false,
+      });
+      if (!selectedCourse) {
+        return res.notFound("Class does not exist", "Class does not exist");
+      }
+      const formattedComponentId = mongoose.Types.ObjectId(gradeComponentId);
+      const validGradeCom = selectedCourse.gradeStructure.find(gradeComponent => gradeComponent._id.equals(formattedComponentId));
+      if (!validGradeCom) {
+        return res.notFound("Grade component does not exist in grade stucture", "Not found");
+      }
+      let errors = [];
+      let doc = {};
+      for (const pointInfo of listPoints) {
+        const validStudent = selectedCourse.enrolledStudents.find(student => student.studentId === pointInfo.studentId);
+        if (!validStudent) {
+          errors.push(`Student ${pointInfo.studentId} is not exist in enrolled list`);
+          continue;
+        }
+        if (Number(pointInfo.point) > validGradeCom.point) {
+          errors.push(`Student ${pointInfo.studentId} can not be greater than ${validGradeCom.point}`);
+          continue;
+        }
+        let grades = validStudent.grades;
+        let updateMode = grades.find(grade => grade.gradeComponentId.equals(formattedComponentId));
+        if (!updateMode) {
+          grades.push({
+            point: Number(pointInfo.point),
+            gradeComponentId: formattedComponentId
+          });
+        } else {
+          grades = grades.map(grade => {
+            if (grade.gradeComponentId.equals(formattedComponentId)) {
+              return {
+                ...grade,
+                point: pointInfo.point,
+              };
+            };
+            return grade;
+          });
+        }
+        doc = await Course.findByIdAndUpdate(
+          courseId,
+          {
+            '$set': {
+              'enrolledStudents.$[el].grades': grades, 
+            }
+          },
+          {
+            arrayFilters: [
+              {
+                'el.studentId': pointInfo.studentId,
+              }
+            ],
+            returnDocument: "after",
+          }
+        );
+      }
+      return res.ok({
+        document: doc,
+        errors
+      });
+    } catch (err) {
+      console.log("finalize grade failed:", err);
+      next(err);
+    }
+  }
 };

@@ -24,6 +24,14 @@ router.put(
   validator(requestSchema.uploadStudentList),
   controller.uploadStudentList
 );
+
+router.put(
+  "/grade/finalize-grades",
+  authenticate,
+  roleAuthenticate,
+  validator(requestSchema.finalizeGrades),
+  controller.finalizeGrades
+)
 module.exports = router;
 
 /**
@@ -59,6 +67,40 @@ module.exports = router;
  *                              type: string
  *                              format: binary
  *                              required: true
+ *      responses:
+ *          200:
+ *              description: Return result
+ *
+ */
+
+/**
+ * @swagger
+ * /api/grade/finalize-grades:
+ *  put:
+ *      tags:
+ *          - grade
+ *      summary: Update data of a grade component in a course
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      example:
+ *                           {
+ *                               "courseId": "619d0228ca30412f1dfcee09",
+ *                               "gradeComponentId": "61a664c7b64e25dd815e8b1a",
+ *                               "listPoints": [
+ *                                   {
+ *                                      studentId: "123123",
+ *                                      point: 3  
+ *                                   },
+ *                                   {
+ *                                      studentId: "2133",
+ *                                      point: 5  
+ *                                   }
+ *                               ]
+ *                           }
  *      responses:
  *          200:
  *              description: Return result

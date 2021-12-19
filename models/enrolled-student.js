@@ -22,6 +22,7 @@ const enrolledStudentSchema = new Schema(
     studentId: {
       type: String,
       required: true,
+      unique: true
     },
     courseId: {
       type: Schema.Types.ObjectId,
