@@ -307,9 +307,9 @@ module.exports = {
         );
       }
       if (
-        !course.owner.equals(mongoose.Types.ObjectId(req.user.id)) &&
-        !course.teachers.find((course) =>
-          course._id.equals(mongoose.Types.ObjectId(req.user.id))
+        !course.owner._id.equals(mongoose.Types.ObjectId(req.user.id)) &&
+        !course.teachers.find((t) =>
+          t._id.equals(mongoose.Types.ObjectId(req.user.id))
         )
       ) {
         const finalizedGradeComponents = course.gradeStructure
