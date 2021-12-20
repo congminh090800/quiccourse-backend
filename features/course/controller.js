@@ -314,10 +314,10 @@ module.exports = {
       ) {
         const finalizedGradeComponents = course.gradeStructure
           .filter((g) => g.isFinalized)
-          .map((g) => g._id.str);
+          .map((g) => g._id.toString());
         for (let i = 0; i < course.enrolledStudents.length; i++) {
           const filtered = course.enrolledStudents[i].grades.filter((grade) =>
-            finalizedGradeComponents.includes(grade.gradeComponentId.str)
+            finalizedGradeComponents.includes(grade.gradeComponentId.toString())
           );
           course.enrolledStudents[i].grades = filtered;
         }
