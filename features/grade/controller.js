@@ -37,7 +37,7 @@ module.exports = {
       const csvString = Buffer.from(req.file.buffer).toString();
       let errors = [];
       let enrolledStudents = [];
-      let index = 1;
+      let index = 0;
       csv
         .parseString(csvString, { headers: true })
         .on("error", (error) => {
@@ -45,6 +45,7 @@ module.exports = {
           return res.badRequest("Error in reading csv", "Bad request");
         })
         .on("data", (row) => {
+          index = index + 1;
           if (!row.full_name || row.full_name.length < 3) {
             errors.push(`row ${index} full_name is null or less than 3 chars`);
           } else if (!row.student_id) {
@@ -59,7 +60,6 @@ module.exports = {
               _id: new mongoose.Types.ObjectId().toHexString(),
             });
           }
-          index++;
         })
         .on("end", async (rowCount) => {
           try {
@@ -281,8 +281,7 @@ module.exports = {
       if (!csvObject || csvObject.length === 0) {
         csvObject = [["student_id", "full_name", pointColumnName]];
       }
-      const data = await writeToString(csvObject, { headers: true });
-
+      let data = await writeToString(csvObject, { headers: true });
       res.set("Content-Type", "text/csv");
       res.setHeader(
         "Content-disposition",
@@ -317,7 +316,7 @@ module.exports = {
       }
       const csvString = Buffer.from(req.file.buffer).toString();
       let errors = [];
-      let index = 1;
+      let index = 0;
       csv
         .parseString(csvString, { headers: true })
         .on("error", (error) => {
@@ -325,6 +324,7 @@ module.exports = {
           return res.badRequest("Error reading grade csv", "Bad request");
         })
         .on("data", async (row) => {
+          index = index + 1;
           const columnName = `${validGradeCom.point}-${validGradeCom.name}`;
           if (!row.student_id) {
             errors.push(`row ${index} student_id is null`);
@@ -377,7 +377,6 @@ module.exports = {
               );
             }
           }
-          index++;
         })
         .on("end", (rowCount) => {
           return res.ok({
