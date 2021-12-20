@@ -306,10 +306,14 @@ module.exports = {
           "Bad request"
         );
       }
-      if (course.participants.find(participant => participant._id.equals(mongoose.Types.ObjectId(req.user.id)))) {
-        const finalizedGradeComponents = course.gradeStructure.filter(g => g.isFinalized).map(g => g._id.str);
+      if (!course.owner.equals(mongoose.Types.ObjectId(req.user.id))) {
+        const finalizedGradeComponents = course.gradeStructure
+          .filter((g) => g.isFinalized)
+          .map((g) => g._id.str);
         for (let i = 0; i < course.enrolledStudents.length; i++) {
-          const filtered = course.enrolledStudents[i].grades.filter(grade => finalizedGradeComponents.includes(grade.gradeComponentId.str));
+          const filtered = course.enrolledStudents[i].grades.filter((grade) =>
+            finalizedGradeComponents.includes(grade.gradeComponentId.str)
+          );
           course.enrolledStudents[i].grades = filtered;
         }
       }
