@@ -306,7 +306,12 @@ module.exports = {
           "Bad request"
         );
       }
-      if (!course.owner.equals(mongoose.Types.ObjectId(req.user.id))) {
+      if (
+        !course.owner.equals(mongoose.Types.ObjectId(req.user.id)) &&
+        !course.teachers.find((course) =>
+          course._id.equals(mongoose.Types.ObjectId(req.user.id))
+        )
+      ) {
         const finalizedGradeComponents = course.gradeStructure
           .filter((g) => g.isFinalized)
           .map((g) => g._id.str);
