@@ -36,7 +36,7 @@ module.exports = {
       }
       const csvString = Buffer.from(req.file.buffer).toString();
       let errors = [];
-      let enrolledStudents = [];
+      let enrolledStudents = selectedCourse.enrolledStudents || [];
       let index = 0;
       csv
         .parseString(csvString, { headers: true })
@@ -51,14 +51,19 @@ module.exports = {
           } else if (!row.student_id) {
             errors.push(`row ${index} student_id is null`);
           } else {
-            enrolledStudents.push({
-              fullName: row.full_name,
-              studentId: row.student_id,
-              courseId: mongoose.Types.ObjectId(courseId),
-              grades: [],
-              deleted_flag: false,
-              _id: new mongoose.Types.ObjectId().toHexString(),
-            });
+            const exist = enrolledStudents.find(
+              (student) => student.studentId === row.student_id
+            );
+            if (!exist) {
+              enrolledStudents.push({
+                fullName: row.full_name,
+                studentId: row.student_id,
+                courseId: mongoose.Types.ObjectId(courseId),
+                grades: [],
+                deleted_flag: false,
+                _id: new mongoose.Types.ObjectId().toHexString(),
+              });
+            }
           }
         })
         .on("end", async (rowCount) => {
