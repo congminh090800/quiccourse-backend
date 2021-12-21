@@ -69,7 +69,6 @@ module.exports = {
                 enrolledStudents: enrolledStudents,
               },
               {
-                overwrite: true,
                 returnDocument: "after",
               }
             );
