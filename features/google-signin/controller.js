@@ -29,7 +29,7 @@ module.exports = {
           avatar: picture,
           googleId: sub,
           authenticationType: "google",
-          isUnactive: false
+          isUnactive: false,
         });
         const saved = await newUser.save();
         return res.ok(saved);
@@ -40,6 +40,12 @@ module.exports = {
             "Bad request"
           );
         } else {
+          if (existed.isUnactive) {
+            return res.forbidden("Account is not active yet", "UNACTIVE");
+          }
+          if (existed.isBlocked) {
+            return res.forbidden("Account is blocked", "BLOCKED");
+          }
           return res.ok(existed);
         }
       }
