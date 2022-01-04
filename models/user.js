@@ -32,6 +32,7 @@ const userSchema = new Schema(
     gender: {
       type: String,
       enum: ["male", "female"],
+      default: "male",
     },
     avatar: {
       type: String,
@@ -59,11 +60,11 @@ const userSchema = new Schema(
     },
     isUnactive: {
       type: Boolean,
-      default: true
+      default: true,
     },
     isBlocked: {
       type: Boolean,
-      default: false
+      default: false,
     },
     deleted_flag: { type: Boolean, default: false },
   },

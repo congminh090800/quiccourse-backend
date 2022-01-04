@@ -4,7 +4,6 @@ const controller = require("./controller");
 const validator = require("middlewares/validator.middleware");
 const requestSchema = require("./validator");
 const authenticate = require("middlewares/authenticate.middleware");
-const authorize = require("middlewares/authorize.middleware");
 const roleAuthorize = require("middlewares/role_authorize.middleware");
 
 router.post(
@@ -14,13 +13,13 @@ router.post(
   controller.create
 );
 
-router.get(
-  "/courses",
-  authenticate,
-  authorize,
-  validator(requestSchema.search, "query"),
-  controller.search
-);
+// router.get(
+//   "/courses",
+//   authenticate,
+//   authorize,
+//   validator(requestSchema.search, "query"),
+//   controller.search
+// );
 
 router.get(
   "/courses/me",
@@ -75,32 +74,32 @@ router.patch(
 );
 
 router.post(
-  '/courses/grade',
+  "/courses/grade",
   validator(requestSchema.setGradeStructure, "body"),
   authenticate,
   controller.setGradeStructure
 );
 
 router.delete(
-  '/courses/grade',
+  "/courses/grade",
   validator(requestSchema.deleteGrade, "body"),
   authenticate,
   controller.deleteGrade
 );
 
 router.put(
-  '/courses/grade',
+  "/courses/grade",
   validator(requestSchema.insertGrade, "body"),
   authenticate,
   controller.insertGrade
 );
 
 router.patch(
-  '/courses/grade',
+  "/courses/grade",
   validator(requestSchema.editGrade, "body"),
   authenticate,
   controller.editGrade
-)
+);
 
 module.exports = router;
 

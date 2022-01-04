@@ -326,12 +326,16 @@ module.exports = {
             .filter((g) => g.isFinalized)
             .map((g) => g._id.toString());
           const studentId = user.studentId;
-          let enrolledStudent = course.enrolledStudents.find(student => student.studentId === studentId);
+          let enrolledStudent = course.enrolledStudents.find(
+            (student) => student.studentId === studentId
+          );
           if (!enrolledStudent) {
             course.enrolledStudent = [];
           } else {
             let grades = enrolledStudent.grades.filter((grade) =>
-              finalizedGradeComponents.includes(grade.gradeComponentId.toString())
+              finalizedGradeComponents.includes(
+                grade.gradeComponentId.toString()
+              )
             );
             enrolledStudent.grades = grades;
             course.enrolledStudents = [enrolledStudent];

@@ -1,12 +1,18 @@
-const Admin = require("models").Admin;
-const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
+const config = require("config");
 module.exports = async function (req, res, next) {
-  let userId = req.user.id;
-  const admin = await Admin.findOne({
-    userId: mongoose.Types.ObjectId(userId),
-  });
-  if (!admin) {
-    return res.forbidden("No authority", "You had no permission to do this");
+  let token = req.headers["authorization"];
+  if (token && token.startsWith("Bearer ")) {
+    token = token.split(" ")[1];
+  } else {
+    return res.badRequest("Bad Request", "Access token does not exist");
   }
-  next();
+  jwt.verify(token, config.secret.accessToken, (err, user) => {
+    if (err) {
+      return res.forbidden(err.name, "Forbidden");
+    } else {
+      req.user = user;
+      next();
+    }
+  });
 };

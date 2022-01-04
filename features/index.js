@@ -7,4 +7,5 @@ router.use(require("./upload/route"));
 router.use(require("./google-signin/route"));
 router.use(require("./grade/route"));
 router.use(require("./notification/route"));
+router.use(require("./admin/route"));
 module.exports = router;
