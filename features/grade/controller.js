@@ -30,10 +30,6 @@ module.exports = {
       if (!selectedCourse) {
         return res.notFound("Class does not exist", "Class does not exist");
       }
-
-      if (selectedCourse.owner != id) {
-        return res.badRequest("You are not the owner", "Permission denied");
-      }
       const csvString = Buffer.from(req.file.buffer).toString();
       let errors = [];
       let enrolledStudents = selectedCourse.enrolledStudents || [];
@@ -183,10 +179,6 @@ module.exports = {
       });
       if (!selectedCourse) {
         return res.notFound("Class does not exist", "Class does not exist");
-      }
-
-      if (selectedCourse.owner != id) {
-        return res.badRequest("You are not the owner", "Permission denied");
       }
       let enrolledStudents = selectedCourse.enrolledStudents || [];
       if (
@@ -404,10 +396,6 @@ module.exports = {
       if (!selectedCourse) {
         return res.notFound("Class does not exist", "Class does not exist");
       }
-
-      if (selectedCourse.owner != id) {
-        return res.badRequest("You are not the owner", "Permission denied");
-      }
       doc = await Course.findByIdAndUpdate(
         courseId,
         {
@@ -471,10 +459,6 @@ module.exports = {
       });
       if (!selectedCourse) {
         return res.notFound("Class does not exist", "Class does not exist");
-      }
-
-      if (selectedCourse.owner != id) {
-        return res.badRequest("You are not the owner", "Permission denied");
       }
       doc = await Course.findByIdAndUpdate(
         courseId,

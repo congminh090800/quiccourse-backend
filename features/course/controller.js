@@ -312,14 +312,30 @@ module.exports = {
           t._id.equals(mongoose.Types.ObjectId(req.user.id))
         )
       ) {
-        const finalizedGradeComponents = course.gradeStructure
-          .filter((g) => g.isFinalized)
-          .map((g) => g._id.toString());
-        for (let i = 0; i < course.enrolledStudents.length; i++) {
-          const filtered = course.enrolledStudents[i].grades.filter((grade) =>
-            finalizedGradeComponents.includes(grade.gradeComponentId.toString())
-          );
-          course.enrolledStudents[i].grades = filtered;
+        const user = await User.findOne(
+          {
+            _id: mongoose.Types.ObjectId(req.user.id),
+            deleted_flag: false,
+          },
+          "-password -accessToken -refreshToken"
+        );
+        if (!user || !user.studentId) {
+          course.enrolledStudents = [];
+        } else {
+          const finalizedGradeComponents = course.gradeStructure
+            .filter((g) => g.isFinalized)
+            .map((g) => g._id.toString());
+          const studentId = user.studentId;
+          let enrolledStudent = course.enrolledStudents.find(student => student.studentId === studentId);
+          if (!enrolledStudent) {
+            course.enrolledStudent = [];
+          } else {
+            let grades = enrolledStudent.grades.filter((grade) =>
+              finalizedGradeComponents.includes(grade.gradeComponentId.toString())
+            );
+            enrolledStudent.grades = grades;
+            course.enrolledStudents = [enrolledStudent];
+          }
         }
       }
       return res.ok(course);
