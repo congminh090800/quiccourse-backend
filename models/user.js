@@ -57,6 +57,14 @@ const userSchema = new Schema(
       type: [notificationSchema],
       default: [],
     },
+    isUnactive: {
+      type: Boolean,
+      default: true
+    },
+    isBlocked: {
+      type: Boolean,
+      default: false
+    },
     deleted_flag: { type: Boolean, default: false },
   },
   { timestamps: true }

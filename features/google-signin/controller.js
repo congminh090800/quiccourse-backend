@@ -29,6 +29,7 @@ module.exports = {
           avatar: picture,
           googleId: sub,
           authenticationType: "google",
+          isUnactive: false
         });
         const saved = await newUser.save();
         return res.ok(saved);

@@ -54,6 +54,14 @@ module.exports = {
         });
       }
 
+      if (user.isUnactive) {
+        return res.forbidden("Account is not active yet", "UNACTIVE");
+      }
+
+      if (user.isBlocked) {
+        return res.forbidden("Account is blocked", "BLOCKED");
+      }
+
       const matched = bcrypt.compareSync(password, user.password);
       if (!matched) {
         return res.unauthorized("Unauthorized", "UNAUTHORIZED");
