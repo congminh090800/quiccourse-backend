@@ -8,7 +8,7 @@ module.exports = async function (req, res, next) {
   if (token && token.startsWith("Bearer ")) {
     token = token.split(" ")[1];
   } else {
-    return res.badRequest("Bad Request", "Access token does not exist");
+    return res.unauthorized("Bad Request", "Access token does not exist");
   }
   if (type == "google") {
     try {
@@ -29,18 +29,18 @@ module.exports = async function (req, res, next) {
         deleted_flag: false,
       });
       if (!user) {
-        return res.forbidden("user not exist", "Forbidden");
+        return res.unauthorized("user not exist", "Forbidden");
       }
       console.log(user.id);
       req.user = user;
       next();
     } catch (err) {
-      return res.forbidden(err, "Forbidden");
+      return res.unauthorized(err, "Forbidden");
     }
   } else {
     jwt.verify(token, config.secret.accessToken, (err, user) => {
       if (err) {
-        return res.forbidden(err.name, "Forbidden");
+        return res.unauthorized(err.name, "Forbidden");
       } else {
         req.user = user;
         next();
