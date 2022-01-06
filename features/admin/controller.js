@@ -282,4 +282,23 @@ module.exports = {
       next(err);
     }
   },
+  refreshToken: async (req, res, next) => {
+    try {
+      const { refreshToken } = req.body;
+      jwt.verify(refreshToken, config.secret.refreshToken, (err, result) => {
+        if (err) {
+          return res.badRequest(err.name, err.name);
+        }
+        const accessToken = jwt.sign(
+          { id: result.id },
+          config.secret.accessToken,
+          { expiresIn: config.secret.accessExpiresIn }
+        );
+        return res.ok(accessToken);
+      });
+    } catch (err) {
+      console.log("refreshToken failed:", err);
+      next(err);
+    }
+  },
 };

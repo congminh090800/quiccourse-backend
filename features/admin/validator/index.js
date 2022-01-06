@@ -7,4 +7,5 @@ module.exports = {
   lockAccount: require("./lock-account"),
   unlockAccount: require("./unlock-account"),
   searchCourse: require("./search-course"),
+  refreshToken: require("./refresh-token"),
 };

@@ -60,6 +60,12 @@ router.get(
   controller.searchCourse
 );
 
+router.post(
+  "/admin/refresh-token",
+  validator(requestSchema.refreshToken),
+  controller.refreshToken
+);
+
 router.get("/admin/courses/:id", authorize, controller.courseDetail);
 
 module.exports = router;
@@ -89,6 +95,34 @@ module.exports = router;
  *                  application/json:
  *                      {
  *                          "data": "61754d7b81dd1d44c3013172"
+ *                      }
+ *
+ */
+
+/**
+ * @swagger
+ * /api/admin/refresh-token:
+ *  post:
+ *      tags:
+ *          - admin
+ *      summary: Refresh jwt
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      example:
+ *                          {
+ *                               "refreshToken": "sometoken"
+ *                           }
+ *      responses:
+ *          200:
+ *              description: Return new access token
+ *              examples:
+ *                  application/json:
+ *                      {
+ *                          "data": "new-token"
  *                      }
  *
  */
