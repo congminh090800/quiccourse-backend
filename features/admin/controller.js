@@ -139,6 +139,7 @@ module.exports = {
         sort: { createdAt: timeOrder },
         lean: true,
         offset: offset,
+        select: "-password -accessToken -refreshToken",
         limit: limit,
       };
       const users = await User.paginate(where, options);
@@ -255,8 +256,11 @@ module.exports = {
       }
       let options = {
         sort: { createdAt: timeOrder },
+        populate: {
+          path: "owner participants teachers",
+          select: "-password -accessToken -refreshToken",
+        },
         lean: true,
-        select: "-password",
         offset: offset,
         limit: limit,
       };
@@ -270,9 +274,13 @@ module.exports = {
   courseDetail: async (req, res, next) => {
     try {
       const { id } = req.params;
+      const removedFields = "-password -accessToken -refreshToken";
       const existed = await Course.findOne({
         _id: mongoose.Types.ObjectId(id),
-      });
+      })
+        .populate("owner", removedFields)
+        .populate("teachers", removedFields)
+        .populate("participants", removedFields);
       if (!existed) {
         return res.notFound("Course does not exist", "NOT_FOUND");
       }
