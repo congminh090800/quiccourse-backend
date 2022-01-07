@@ -1,7 +1,7 @@
 {
-  "name": "hcmus-course-backend",
+  "name": "quiccourse",
   "version": "1.0.0",
-  "description": "Restful apis for course online project",
+  "description": "Restful apis for quiccourse project",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
