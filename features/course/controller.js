@@ -236,7 +236,7 @@ module.exports = {
       next(error);
     }
   },
-  participateByLink: async (req, res) => {
+  participateByLink: async (req, res, next) => {
     try {
       const userId = req.user.id;
       const code = req.params.courseCode;
@@ -348,7 +348,7 @@ module.exports = {
       next(err);
     }
   },
-  sendInvitationEmail: async (req, res) => {
+  sendInvitationEmail: async (req, res, next) => {
     const { emails } = req.body;
     const course = req.course;
     const userId = req.user.id;
@@ -386,7 +386,7 @@ module.exports = {
       next(err);
     }
   },
-  sendTeachersInvitationEmail: async (req, res) => {
+  sendTeachersInvitationEmail: async (req, res, next) => {
     const { emails } = req.body;
     const course = req.course;
     const requestUserId = req.user.id;
@@ -434,7 +434,7 @@ module.exports = {
       next(err);
     }
   },
-  teacherParticipateByLink: async (req, res) => {
+  teacherParticipateByLink: async (req, res, next) => {
     const requestUserId = req.user.id;
     const key = req.params.key;
     const extractedKey = key.split("!");
