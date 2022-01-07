@@ -377,10 +377,7 @@ module.exports = {
         html: `<p>Click <a href="${acceptLink}">this link</a> to accept join class invitation</p>`, // html body
       };
 
-      await transporter.sendMail(mailOptions, (err) => {
-        if (err) return res.failure(err.message, err.name);
-        return res.ok(true);
-      });
+      await transporter.sendMail(mailOptions);
     } catch (err) {
       console.log(err);
       next(err);
@@ -422,10 +419,7 @@ module.exports = {
             html: `<p>Click <a href="${acceptLink}">this link</a> to accept join class invitation</p>`, // html body
           };
 
-          await transporter.sendMail(mailOptions, (err) => {
-            if (err) return res.failure(err.message, err.name);
-            return res.ok(true);
-          });
+          await transporter.sendMail(mailOptions);
         }
       }
       return res.ok(true);
